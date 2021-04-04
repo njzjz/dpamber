@@ -7,7 +7,7 @@ def run():
         subparsers = parser.add_subparsers()
         parser_model_devi = subparsers.add_parser(
                 "devi", help="Generating initial data for surface systems.")
-        parser_model_devi.add_argument('--models', type=str, 
+        parser_model_devi.add_argument('--models', type=str, nargs='+',
                                 help="models")
         parser_model_devi.add_argument('--cutoff', type=float, 
                                 help="cutoff")
