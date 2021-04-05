@@ -3,6 +3,7 @@ import numpy as np
 import deepmd.DeepPot as DeepPot
 import dpdata
 from dpdata.amber.mask import load_param_file
+from tqdm import tqdm
 
 
 def calculate_devi(models: list,
@@ -24,19 +25,27 @@ def calculate_devi(models: list,
     interactwith = "(%s)<:%f&!%s" % (qm_region, cutoff, r"@%EP")
 
     stds = []
-    for ssy in sy:
+    for ii, ssy in enumerate(tqdm(sy)):
         ssy = ssy.pick_by_amber_mask(
             parm7, maskstr=interactwith, pass_coords=True)
         ssy = ssy[0]
         ssy = ssy.remove_atom_names("EP")
 
-        forces = [ssy.predict(dp).pick_by_amber_mask(
-            parm7, qm_region)['forces'] for dp in dps]
+        results = [ssy.predict(dp).pick_by_amber_mask(
+            parm7, qm_region) for dp in dps]
+        energies = [dp['energies'] for dp in results]
+        energies = np.array(list(energies))
+        forces = [dp['forces'] for dp in results]
         forces = np.array(list(forces))
-        std = np.max(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
-        stds.append(float(std))
+        std_e_min = np.min(np.linalg.norm(np.std(energies, axis=0), axis=-1), axis=-1)
+        std_e_ave = np.mean(np.linalg.norm(np.std(energies, axis=0), axis=-1), axis=-1)
+        std_e_max = np.max(np.linalg.norm(np.std(energies, axis=0), axis=-1), axis=-1)
+        std_f_min = np.min(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
+        std_f_ave = np.mean(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
+        std_f_max = np.max(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
+        stds.append([ii, float(std_e_max), float(std_e_min), float(std_e_ave),  float(std_f_max), float(std_f_min), float(std_f_ave)])
     stds = np.array(stds)
-    np.savetxt("std.txt", stds)
+    np.savetxt("model_devi.out", stds, header="step max_devi_e min_devi_e avg_devi_e max_devi_f min_devi_f avg_devi_f")
 
 def run(args):
     calculate_devi(
