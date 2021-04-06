@@ -26,6 +26,6 @@ def run():
                         help="parm7_file")
         parser_corr.add_argument('--qm_region', type=str,default=":1",
                         help="qm_region")
-        parser_corr.set_defaults(func=model_devi_run)
+        parser_corr.set_defaults(func=corr_run)
         args = parser.parse_args()
         args.func(args)
