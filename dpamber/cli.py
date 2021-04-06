@@ -18,14 +18,6 @@ def run():
                         help="qm_region")
         parser_model_devi.set_defaults(func=model_devi_run)
 
-"""
-    get_amber_fp(cutoff=args.cutoff,
-                 parmfile=args.parmfile,
-                 ll=args.ll,
-                 hl=args.hl,
-                 target=args.target,
-                 out=args.out,
-                 """
         parser_corr = subparsers.add_parser(
                 "corr", help="Generate systems for DPRc.")
         parser_corr.add_argument('--cutoff', type=float, 
