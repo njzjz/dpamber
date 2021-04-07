@@ -1,6 +1,5 @@
 """Calculate model deviation of the Amber MD traj."""
 import numpy as np
-import deepmd.DeepPot as DeepPot
 import dpdata
 from dpdata.amber.mask import load_param_file
 from tqdm import tqdm
@@ -17,6 +16,7 @@ def calculate_devi(models: list,
     models: ["graph.0.pb", "graph.1.pb"]
     """
     # Deep potentials
+    import deepmd.DeepPot as DeepPot
     dps = [DeepPot(mm) for mm in models]
 
     sy = dpdata.System("rc", parm7_file=parm7_file,

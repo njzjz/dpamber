@@ -27,6 +27,8 @@ def run():
                              help="parm7_file")
     parser_corr.add_argument('--qm_region', type=str, default=":1",
                              help="qm_region")
+    parser_corr.add_argument('--nc', type=str,
+                             help="nc file")
     parser_corr.add_argument('--hl', type=str,
                              help="high level file")
     parser_corr.add_argument('--ll', type=str,
