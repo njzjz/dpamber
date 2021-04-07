@@ -13,12 +13,12 @@ def get_amber_fp(cutoff: float,
     interactwith = "(%s)<:%f&!%s" % (target, cutoff, ep)
 
     s_ll = dpdata.LabeledSystem(
-        ll, fmt='amber/md', use_element_symbols=target)
+        ll, parm7_file=parmfile, fmt='amber/md', use_element_symbols=target)
     s_hl = dpdata.LabeledSystem(
-        hl, fmt='amber/md', use_element_symbols=target)
+        hl, parm7_file=parmfile, fmt='amber/md', use_element_symbols=target)
     s_corr = s_ll.correction(s_hl)
     s_corr = s_corr.pick_by_amber_mask(
-        hl+".parm7", interactwith, pass_coords=True)
+        parmfile, interactwith, pass_coords=True)
     for ss in s_corr:
         ss = ss.remove_atom_names('EP')
         ms.append(ss)
