@@ -31,6 +31,8 @@ def run():
                              help="high level file")
     parser_corr.add_argument('--ll', type=str,
                              help="low level file")
+    parser_corr.add_argument('--out', type=str, default="dataset",
+                             help="output directory (default is dataset)")
     parser_corr.set_defaults(func=corr_run)
     args = parser.parse_args()
     args.func(args)
