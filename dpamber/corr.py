@@ -11,7 +11,7 @@ def get_amber_fp(cutoff: float,
                  out: str = "dataset"):
     ms = dpdata.MultiSystems()
     ep = r'@%EP'
-    interactwith = "(%s)<:%f&!%s" % (target, cutoff, ep)
+    interactwith = "(%s)<@%f&!%s" % (target, cutoff, ep)
 
     s_ll = dpdata.LabeledSystem(
         ll, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md', use_element_symbols=target)

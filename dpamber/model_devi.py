@@ -22,7 +22,7 @@ def calculate_devi(models: list,
     sy = dpdata.System("rc", parm7_file=parm7_file,
                        fmt="amber/md", use_element_symbols=":1")
     parm7 = load_param_file(parm7_file)
-    interactwith = "(%s)<:%f&!%s" % (qm_region, cutoff, r"@%EP")
+    interactwith = "(%s)<@%f&!%s" % (qm_region, cutoff, r"@%EP")
 
     stds = []
     for ii, ssy in enumerate(tqdm(sy)):
