@@ -8,7 +8,7 @@ def get_amber_fp(cutoff: float,
                  ll: str,
                  hl: str,
                  target: str = ":1",
-                 out: str = "dataset"):
+                 out: str = None):
     ms = dpdata.MultiSystems()
     ep = r'@%EP'
     interactwith = "(%s)<@%f&!%s" % (target, cutoff, ep)
@@ -24,7 +24,9 @@ def get_amber_fp(cutoff: float,
         ss = ss.remove_atom_names('EP')
         ms.append(ss)
 
-    ms.to_deepmd_npy(out)
+    if out:
+        ms.to_deepmd_npy(out)
+    return ms
 
 
 def run(args):
