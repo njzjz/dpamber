@@ -5,7 +5,7 @@ setup(
     version = "0.0.6",
     install_requires = [
         "numpy",
-        "dpdata>=0.2.1",
+        "dpdata[amber]>=0.2.1",
         "deepmd-kit",
         "tqdm",
     ],
