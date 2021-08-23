@@ -53,6 +53,13 @@ def qmbuffer(cutoff: float,
     sort_parm(parm_mm_not)
     write_parm(parm_mm_not, "mmwater_not", ll_mdinfile, "", "")
 
+    # also try to remove all epw
+    parm_noep = copy(parm)
+    parm_noep, _ = remove_epw(parm_noep, range(len(target_idx), s.get_natoms()))
+    sort_parm(parm_mm)
+    parm_noep.write_parm("noepw.parm7")
+
+
 def label_atoms(parm, target_idx, qmwater_idx):
     """set qwt"""
     for ii in range(len(parm.atoms)):
