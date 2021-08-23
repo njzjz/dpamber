@@ -8,7 +8,32 @@ def get_amber_fp(cutoff: float,
                  ll: str,
                  hl: str,
                  target: str = ":1",
-                 out: str = None):
+                 out: str = None,
+            ) -> dpdata.MultiSystems:
+    """Use Ambertools to do correction calculation between a high level potential and a low level potential.
+
+    Parameters
+    ----------
+    cutoff: float
+        The QM/MM cutoff radius.
+    parmfile: str
+        The original parm file.
+    ncfile: str
+        The coordinates file.
+    ll: str
+        The low level system prefix.
+    hl: str
+        The high level system prefix.
+    target: str
+        The QM system mask.
+    out: str
+        The output deepmd/npy directory.
+
+    Returns
+    -------
+    ms: dpdata.MultiSystems
+        The output MultiSystems
+    """
     ms = dpdata.MultiSystems()
     ep = r'@%EP'
     if cutoff > 0.:

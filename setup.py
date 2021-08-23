@@ -8,6 +8,7 @@ setup(
         "dpdata[amber]>=0.2.1",
         "deepmd-kit",
         "tqdm",
+        "parmed",
     ],
     entry_points = {
         'console_scripts': ['dpamber=dpamber.cli:run'],
