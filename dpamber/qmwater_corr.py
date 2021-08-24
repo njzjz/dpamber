@@ -52,7 +52,6 @@ def get_amber_fp(cutoff: float,
 
 def run(args):
     get_amber_fp(cutoff=args.cutoff,
-                 parmfile=args.parm7_file,
                  target=args.qm_region,
                  out=args.out,
                  )
