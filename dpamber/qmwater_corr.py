@@ -38,7 +38,7 @@ def get_amber_fp(cutoff: float,
     natom_not = s_notcorr.get_natoms()
     assert(np.all(s_allcorr['coords'][:,-natom_not:]==s_notcorr['coords']))
     s_allcorr.data['energies'] -= s_notcorr['energies']
-    s_allcorr.data['forces'][:,-natom_not:] -= s_notcorr['energies']
+    s_allcorr.data['forces'][:,-natom_not:] -= s_notcorr['forces']
 
     s_allcorr = s_allcorr.pick_by_amber_mask(
         "noepw.parm7", interactwith, pass_coords=True, nopbc=True)

@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name = "dpamber",
-    version = "0.1.1",
+    version = "0.1.2",
     install_requires = [
         "numpy",
         "dpdata[amber]>=0.2.1",
