@@ -17,19 +17,19 @@ def get_amber_fp(cutoff: float,
         interactwith = target
 
     s_qmwater = dpdata.LabeledSystem(
-        "qmwater", fmt='amber/md', use_element_symbols=target)
+        "qmwater", fmt='amber/md/qmmm', qm_region=target)
     s_qmwater = s_qmwater.remove_atom_names('EP')
     s_mmwater = dpdata.LabeledSystem(
-        "mmwater", fmt='amber/md', use_element_symbols=target)
+        "mmwater", fmt='amber/md/qmmm', qm_region=target)
     s_mmwater = s_mmwater.remove_atom_names('EP')
     assert(np.all(s_qmwater['coords']==s_mmwater['coords']))
     s_allcorr = s_mmwater.correction(s_qmwater)
     
     s_qmwaternot = dpdata.LabeledSystem(
-        "qmwater_not", fmt='amber/md')
+        "qmwater_not", fmt='amber/md/qmmm')
     s_qmwaternot = s_qmwaternot.remove_atom_names('EP')
     s_mmwaternot = dpdata.LabeledSystem(
-        "mmwater_not", fmt='amber/md')
+        "mmwater_not", fmt='amber/md/qmmm')
     s_mmwaternot = s_mmwaternot.remove_atom_names('EP')
     assert(np.all(s_qmwaternot['coords']==s_mmwaternot['coords']))
     s_notcorr = s_mmwaternot.correction(s_qmwaternot)

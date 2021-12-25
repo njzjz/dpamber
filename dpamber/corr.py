@@ -42,9 +42,9 @@ def get_amber_fp(cutoff: float,
         interactwith = target
 
     s_ll = dpdata.LabeledSystem(
-        ll, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md', use_element_symbols=target)
+        ll, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
     s_hl = dpdata.LabeledSystem(
-        hl, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md', use_element_symbols=target)
+        hl, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
     s_corr = s_ll.correction(s_hl)
     s_corr = s_corr.pick_by_amber_mask(
         parmfile, interactwith, pass_coords=True, nopbc=True)
