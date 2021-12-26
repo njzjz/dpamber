@@ -47,7 +47,7 @@ def get_amber_fp(cutoff: float,
         hl, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
     s_corr = s_ll.correction(s_hl)
     s_corr = s_corr.pick_by_amber_mask(
-        parmfile, interactwith, pass_coords=True, nopbc=True)
+        parmfile, interactwith, pass_coords=True, nopbc=False)
     for ss in s_corr:
         ss = ss.remove_atom_names('EP')
         ms.append(ss)
