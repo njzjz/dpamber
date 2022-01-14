@@ -1,5 +1,7 @@
 import dpdata
 import numpy as np
+from dpdata.amber.mask import pick_by_amber_mask
+from ase.geometry import wrap_positions
 
 
 def get_amber_fp(cutoff: float,
@@ -46,8 +48,13 @@ def get_amber_fp(cutoff: float,
     s_hl = dpdata.LabeledSystem(
         hl, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
     s_corr = s_ll.correction(s_hl)
+    # wrap the coords...
+    qm_index = pick_by_amber_mask(parm7_file, target)
+    wraped_coords = wrap_positions(s_corr['coords'][0], cell=s_corr['cells'][0], pbc=True, center=np.mean(s_corr['coords'][0, qm_index], axis=0))
+    s_corr['coords'][0, :, :] = wraped_coords
+
     s_corr = s_corr.pick_by_amber_mask(
-        parmfile, interactwith, pass_coords=True, nopbc=False)
+        parmfile, interactwith, pass_coords=True, nopbc=True)
     for ss in s_corr:
         ss = ss.remove_atom_names('EP')
         ms.append(ss)
