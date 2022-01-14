@@ -49,7 +49,7 @@ def get_amber_fp(cutoff: float,
         hl, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
     s_corr = s_ll.correction(s_hl)
     # wrap the coords...
-    qm_index = pick_by_amber_mask(parm7_file, target)
+    qm_index = pick_by_amber_mask(parmfile, target)
     wraped_coords = wrap_positions(s_corr['coords'][0], cell=s_corr['cells'][0], pbc=True, center=np.mean(s_corr['coords'][0, qm_index], axis=0))
     s_corr['coords'][0, :, :] = wraped_coords
 
