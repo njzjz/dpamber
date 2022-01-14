@@ -1,7 +1,7 @@
 import dpdata
 import numpy as np
 from dpdata.amber.mask import pick_by_amber_mask
-from ase.geometry import wrap_positions
+from ase.geometry import wrap_positions, Cell
 
 
 def get_amber_fp(cutoff: float,
@@ -50,8 +50,9 @@ def get_amber_fp(cutoff: float,
     s_corr = s_ll.correction(s_hl)
     # wrap the coords...
     qm_index = pick_by_amber_mask(parmfile, target)
-    wraped_coords = wrap_positions(s_corr['coords'][0], cell=s_corr['cells'][0], pbc=True, center=np.mean(s_corr['coords'][0, qm_index], axis=0))
-    s_corr['coords'][0, :, :] = wraped_coords
+    cell = Cell(s_corr['cells'][0])
+    wraped_coords = wrap_positions(cell.scaled_positions(s_corr['coords'][0]), cell=s_corr['cells'][0], pbc=True, center=cell.scaled_positions(np.mean(s_corr['coords'][0, qm_index], axis=0)))
+    s_corr['coords'][0, :, :] = cell.cartesian_positions(wraped_coords)
 
     s_corr = s_corr.pick_by_amber_mask(
         parmfile, interactwith, pass_coords=True, nopbc=True)
