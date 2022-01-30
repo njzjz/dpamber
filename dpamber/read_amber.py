@@ -116,6 +116,11 @@ def read_amber_traj(parm7_file, nc_file, mdfrc_file=None, mden_file=None, mdout_
     data['atom_numbs'] = list(atom_numbs)
     data['atom_types'] = atom_types
     if labeled:
+        if np.isnan(forces).any() or np.isnan(energies).any():
+            return {
+                'energies': [],
+                'forces': [],
+            }
         data['forces'] = forces * force_convert
         data['energies'] = np.array(energies) * energy_convert
     data['coords'] = coords
