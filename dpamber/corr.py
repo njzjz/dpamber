@@ -2,6 +2,7 @@ import dpdata
 import numpy as np
 from dpdata.amber.mask import pick_by_amber_mask
 from ase.geometry import wrap_positions, Cell
+from typing import Union
 
 
 def get_amber_fp(cutoff: float,
@@ -11,6 +12,8 @@ def get_amber_fp(cutoff: float,
                  hl: str,
                  target: str = ":1",
                  out: str = None,
+                 idx: Union[slice, list, int] = None,
+                 suffix_mdfrc = None,
             ) -> dpdata.MultiSystems:
     """Use Ambertools to do correction calculation between a high level potential and a low level potential.
 
@@ -30,6 +33,10 @@ def get_amber_fp(cutoff: float,
         The QM system mask.
     out: str
         The output deepmd/npy directory.
+    idx: slice or list or int
+        index
+    suffix_mdfrc: str, optional
+        suffix of mdfrc file
 
     Returns
     -------
@@ -43,10 +50,21 @@ def get_amber_fp(cutoff: float,
     else:
         interactwith = target
 
+    if suffix_mdfrc is not None:
+        ll_frc = ll + suffix_mdfrc
+        hl_frc = hl + suffix_mdfrc
+    else:
+        ll_frc = None
+        hl_frc = None
+
     s_ll = dpdata.LabeledSystem(
-        ll, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
+        ll, nc_file=ncfile, mdfrc_file=ll_frc, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
     s_hl = dpdata.LabeledSystem(
-        hl, nc_file=ncfile, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
+        hl, nc_file=ncfile, mdfrc_file=hl_frc, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
+    if idx is not None:
+        s_ll = s_ll[idx]
+        s_hl = s_hl[idx]
+
     s_corr = s_ll.correction(s_hl)
     # wrap the coords...
     qm_index = pick_by_amber_mask(parmfile, target)
