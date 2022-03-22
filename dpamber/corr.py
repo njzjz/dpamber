@@ -68,9 +68,10 @@ def get_amber_fp(cutoff: float,
     s_corr = s_ll.correction(s_hl)
     # wrap the coords...
     qm_index = pick_by_amber_mask(parmfile, target)
-    cell = Cell(s_corr['cells'][0])
-    wraped_coords = wrap_positions(cell.scaled_positions(s_corr['coords'][0]), cell=s_corr['cells'][0], pbc=True, center=cell.scaled_positions(np.mean(s_corr['coords'][0, qm_index], axis=0)))
-    s_corr['coords'][0, :, :] = cell.cartesian_positions(wraped_coords)
+    for ii in range(len(s_corr)):
+        cell = Cell(s_corr['cells'][ii])
+        wraped_coords = wrap_positions(cell.scaled_positions(s_corr['coords'][ii]), cell=s_corr['cells'][ii], pbc=True, center=cell.scaled_positions(np.mean(s_corr['coords'][ii, qm_index], axis=0)))
+        s_corr['coords'][ii, :, :] = cell.cartesian_positions(wraped_coords)
 
     s_corr = s_corr.pick_by_amber_mask(
         parmfile, interactwith, pass_coords=True, nopbc=True)
