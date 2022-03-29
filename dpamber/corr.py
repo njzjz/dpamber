@@ -80,7 +80,10 @@ def get_amber_fp(cutoff: float,
         ms.append(ss)
 
     if out:
-        ms.to_deepmd_npy(out)
+        if out.endswith(".hdf5"):
+            ms.to_deepmd_hdf5(out)
+        else:
+            ms.to_deepmd_npy(out)
     return ms
 
 
@@ -92,4 +95,5 @@ def run(args):
                  hl=args.hl,
                  target=args.qm_region,
                  out=args.out,
+                 suffix_mdfrc=suffix_mdfrc,
                  )

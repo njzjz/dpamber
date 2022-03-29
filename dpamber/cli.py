@@ -36,7 +36,9 @@ def run():
     parser_corr.add_argument('--ll', type=str,
                              help="low level file")
     parser_corr.add_argument('--out', type=str, default="dataset",
-                             help="output directory (default is dataset)")
+                             help="output directory or hdf5 file (default is dataset)")
+    parser_corr.add_argument('--suffix_mdfrc', type=str,
+                             help="suffix of mdfrc file")
     parser_corr.set_defaults(func=corr_run)
 
     parser_qmwater = subparsers.add_parser(
