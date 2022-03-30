@@ -95,5 +95,5 @@ def run(args):
                  hl=args.hl,
                  target=args.qm_region,
                  out=args.out,
-                 suffix_mdfrc=suffix_mdfrc,
+                 suffix_mdfrc=args.suffix_mdfrc,
                  )
