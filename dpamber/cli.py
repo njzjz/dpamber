@@ -24,19 +24,19 @@ def run():
     parser_corr = subparsers.add_parser(
         "corr", help="Generate systems for DPRc.")
     parser_corr.add_argument('--cutoff', type=float,
-                             help="cutoff")
+                             help="QM/MM cutoff radius")
     parser_corr.add_argument('--parm7_file', type=str, default="qmmm.parm7",
-                             help="parm7_file")
+                             help="AMBER parm file")
     parser_corr.add_argument('--qm_region', type=str, default=":1",
-                             help="qm_region")
+                             help="QM region with AMBER mask. Add quote if containing space")
     parser_corr.add_argument('--nc', type=str,
-                             help="nc file")
+                             help="AMBER coordinates (nc) file")
     parser_corr.add_argument('--hl', type=str,
-                             help="high level file")
+                             help="Prefix to high-level files, including .mdout, .mdfrc")
     parser_corr.add_argument('--ll', type=str,
-                             help="low level file")
+                             help="Prefix to low-level files, including .mdout, .mdfrc")
     parser_corr.add_argument('--out', type=str, default="dataset",
-                             help="output directory or hdf5 file (default is dataset)")
+                             help="output directory or hdf5 file for DeePMD-kit data (default is dataset)")
     parser_corr.add_argument('--suffix_mdfrc', type=str,
                              help="suffix of mdfrc file")
     parser_corr.set_defaults(func=corr_run)
