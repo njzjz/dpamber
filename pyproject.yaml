@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=45", "setuptools_scm[toml]>=6.2"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dpamber"
+description = "Some useful tools related to Amber and DP."
+classifiers = [
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+]
+dependencies = [
+    "numpy",
+    "dpdata[amber]>=0.2.2",
+    "deepmd-kit",
+    "tqdm",
+    "parmed",
+    "ase",
+    "scipy",
+]
+requires-python = ">=3.6"
+
+
+[project.urls]
+Homepage = "https://github.com/njzjz/dpamber"
+
+[project.entry-points."console_scripts"]
+dpamber=dpamber.cli:run
+
+[project.entry-points."dpdata.plugins"]
+amber_md_qmmm=dpamber.read_amber:AmberMDQMMMFormat
+
+[tool.setuptools_scm]
