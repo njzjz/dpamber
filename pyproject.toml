@@ -20,7 +20,7 @@ dependencies = [
     "scipy",
 ]
 requires-python = ">=3.6"
-
+readme = "README.md"
 
 [project.urls]
 Homepage = "https://github.com/njzjz/dpamber"
