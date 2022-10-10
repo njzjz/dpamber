@@ -4,6 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "dpamber"
+version = "unknown"
 description = "Some useful tools related to Amber and DP."
 classifiers = [
     "Programming Language :: Python",
