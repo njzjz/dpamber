@@ -78,12 +78,16 @@ def read_amber_traj(parm7_file, nc_file, mdfrc_file=None, mden_file=None, mdout_
 
     with netcdf.netcdf_file(nc_file, 'r') as f:
         coords = np.array(f.variables["coordinates"][:])
-        cell_lengths = np.array(f.variables["cell_lengths"][:])
-        cell_angles = np.array(f.variables["cell_angles"][:])
-        shape = cell_lengths.shape
+        shape = coords.shape
         cells = np.zeros((shape[0], 3, 3))
-        for ii in range(cell_lengths.shape[0]):
-            cells[ii, :, :] = cellpar_to_cell([*cell_lengths[ii], *cell_angles[ii]])
+        if "cell_lengths" in f.variables:
+            nopbc = False
+            cell_lengths = np.array(f.variables["cell_lengths"][:])
+            cell_angles = np.array(f.variables["cell_angles"][:])
+            for ii in range(cell_lengths.shape[0]):
+                cells[ii, :, :] = cellpar_to_cell([*cell_lengths[ii], *cell_angles[ii]])
+        else:
+            nopbc = True
 
     if labeled:
         with netcdf.netcdf_file(mdfrc_file, 'r') as f:
@@ -126,6 +130,8 @@ def read_amber_traj(parm7_file, nc_file, mdfrc_file=None, mden_file=None, mdout_
     data['coords'] = coords
     data['cells'] = cells
     data['orig'] = np.array([0, 0, 0])
+    if nopbc:
+        data['nopbc'] = True
     return data
 
 
