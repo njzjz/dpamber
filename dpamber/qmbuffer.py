@@ -4,24 +4,31 @@ import parmed.tools as PT
 from copy import copy
 
 
-def qmbuffer(cutoff: float,
-              ncfile: str,
-              parmfile: str,
-              hl_mdinfile: str,
-              ll_mdinfile: str,
-              target: str = ":1",
-              targetcharge: int = -2):
+def qmbuffer(
+    cutoff: float,
+    ncfile: str,
+    parmfile: str,
+    hl_mdinfile: str,
+    ll_mdinfile: str,
+    target: str = ":1",
+    targetcharge: int = -2,
+):
     """
     Assume there is only one frame.
     cutoff = 4.5
     """
     mask_str = "((%s)<:%.1f) & !(%s)" % (target, cutoff, target)
-    s = dpdata.System("",
-        nc_file=ncfile, parm7_file=parmfile, fmt='amber/md', use_element_symbols=target)
+    s = dpdata.System(
+        "",
+        nc_file=ncfile,
+        parm7_file=parmfile,
+        fmt="amber/md",
+        use_element_symbols=target,
+    )
     # systems with nearby waters
     parm = load_param_file(parmfile)
-    target_idx = pick_by_amber_mask(parm, target, s['coords'][0])
-    nearby_idx = pick_by_amber_mask(parm, mask_str, s['coords'][0])
+    target_idx = pick_by_amber_mask(parm, target, s["coords"][0])
+    nearby_idx = pick_by_amber_mask(parm, mask_str, s["coords"][0])
     parm = reorder(parm, target_idx, nearby_idx)
     # Here we need to generate 4 new parms:
     # 1. reordered, QM water
@@ -32,7 +39,7 @@ def qmbuffer(cutoff: float,
     new_nearby_idx = range(len(target_idx), len(target_idx) + len(nearby_idx))
     parm_qm = copy(parm)
     parm_qm, nwater = remove_epw(parm_qm, new_nearby_idx)
-    water_mask = "(:2-%d)" % (nwater+1)
+    water_mask = "(:2-%d)" % (nwater + 1)
     qmmask = "(%s)|(%s)" % (target, water_mask)
     sort_parm(parm_qm)
     write_parm(parm_qm, "qmwater", hl_mdinfile, qmmask, target, charge=targetcharge)
@@ -70,7 +77,7 @@ def label_atoms(parm, target_idx, qmwater_idx):
             atom._sorted = 1
         else:
             atom._sorted = 2
-        
+
 
 def remove_epw(parm, idx):
     """Remove all EP atoms in water in idx"""
@@ -85,7 +92,7 @@ def remove_epw(parm, idx):
             if res.atoms[0].name == "O":
                 res.name = "qwt"
                 res.atoms[0].charge += atom.charge
-                #print(atom.charge, res.atoms[0].charge)
+                # print(atom.charge, res.atoms[0].charge)
                 atom.charge = 0
                 # remove from res
                 res.atoms.pop(res.atoms.index(atom))
@@ -108,30 +115,40 @@ def remove_epw(parm, idx):
                 if p.type == "EP":
                     atom.children.pop(atom.children.index(p))
 
-    mask = "@" + ",".join([ str(ii+1) for ii in ep])
+    mask = "@" + ",".join([str(ii + 1) for ii in ep])
     parm = strip_atoms(parm, mask)
     return parm, nwater
+
 
 def strip_atoms(parm, mask):
     parm.strip(mask)
     return parm
+
 
 def reorder(parm, target_idx, nearby_idx):
     label_atoms(parm, target_idx, qmwater_idx=nearby_idx)
     parm.atoms.sort(key=lambda a: a._sorted)
     return parm
 
+
 def sort_parm(parm):
     # sort residues
     parm.residues.sort(key=sort_residues)
 
+
 def write_parm(parm, fn, mdinfile, qmmask, target, charge=0):
     parm.write_parm("%s.parm7" % fn)
     parm.write_rst7("%s.rst7" % fn)
-    PT.writeCoordinates(parm, '%s.nc' % fn).execute()
-    ifqnt = str(int(target!=""))
-    with open(mdinfile) as f, open("%s.mdin" % fn, 'w') as fw:
-        fw.write(f.read().replace("%QMMASK%", qmmask).replace("%NOSHAKEMASK%", target).replace("%CHARGE%", str(charge)).replace("%IFQNT%", ifqnt))
+    PT.writeCoordinates(parm, "%s.nc" % fn).execute()
+    ifqnt = str(int(target != ""))
+    with open(mdinfile) as f, open("%s.mdin" % fn, "w") as fw:
+        fw.write(
+            f.read()
+            .replace("%QMMASK%", qmmask)
+            .replace("%NOSHAKEMASK%", target)
+            .replace("%CHARGE%", str(charge))
+            .replace("%IFQNT%", ifqnt)
+        )
 
 
 def sort_residues(res):
@@ -141,12 +158,14 @@ def sort_residues(res):
     }
     return keys.get(res.name, 0)
 
+
 def run(args):
-    qmbuffer(cutoff=args.cutoff,
-            parmfile=args.parm7_file,
-            ncfile=args.nc,
-            ll_mdinfile=args.ll,
-            hl_mdinfile=args.hl,
-            target=args.qm_region,
-            targetcharge=args.charge,
-            )
+    qmbuffer(
+        cutoff=args.cutoff,
+        parmfile=args.parm7_file,
+        ncfile=args.nc,
+        ll_mdinfile=args.ll,
+        hl_mdinfile=args.hl,
+        target=args.qm_region,
+        targetcharge=args.charge,
+    )
