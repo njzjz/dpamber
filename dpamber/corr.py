@@ -5,16 +5,17 @@ from ase.geometry import wrap_positions, Cell
 from typing import Union
 
 
-def get_amber_fp(cutoff: float,
-                 parmfile: str,
-                 ncfile: str,
-                 ll: str,
-                 hl: str,
-                 target: str = ":1",
-                 out: str = None,
-                 idx: Union[slice, list, int] = None,
-                 suffix_mdfrc = None,
-            ) -> dpdata.MultiSystems:
+def get_amber_fp(
+    cutoff: float,
+    parmfile: str,
+    ncfile: str,
+    ll: str,
+    hl: str,
+    target: str = ":1",
+    out: str = None,
+    idx: Union[slice, list, int] = None,
+    suffix_mdfrc=None,
+) -> dpdata.MultiSystems:
     """Use Ambertools to do correction calculation between a high level potential and a low level potential.
 
     Parameters
@@ -44,8 +45,8 @@ def get_amber_fp(cutoff: float,
         The output MultiSystems
     """
     ms = dpdata.MultiSystems()
-    ep = r'@%EP'
-    if cutoff > 0.:
+    ep = r"@%EP"
+    if cutoff > 0.0:
         interactwith = "(%s)<@%f&!%s" % (target, cutoff, ep)
     else:
         interactwith = target
@@ -58,9 +59,21 @@ def get_amber_fp(cutoff: float,
         hl_frc = None
 
     s_ll = dpdata.LabeledSystem(
-        ll, nc_file=ncfile, mdfrc_file=ll_frc, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
+        ll,
+        nc_file=ncfile,
+        mdfrc_file=ll_frc,
+        parm7_file=parmfile,
+        fmt="amber/md/qmmm",
+        qm_region=target,
+    )
     s_hl = dpdata.LabeledSystem(
-        hl, nc_file=ncfile, mdfrc_file=hl_frc, parm7_file=parmfile, fmt='amber/md/qmmm', qm_region=target)
+        hl,
+        nc_file=ncfile,
+        mdfrc_file=hl_frc,
+        parm7_file=parmfile,
+        fmt="amber/md/qmmm",
+        qm_region=target,
+    )
     if idx is not None:
         s_ll = s_ll[idx]
         s_hl = s_hl[idx]
@@ -69,15 +82,23 @@ def get_amber_fp(cutoff: float,
     # wrap the coords...
     qm_index = pick_by_amber_mask(parmfile, target)
     for ii in range(len(s_corr)):
-        cell = Cell(s_corr['cells'][ii])
-        wraped_coords = wrap_positions(s_corr['coords'][ii], cell=s_corr['cells'][ii], pbc=True, center=cell.scaled_positions(np.mean(s_corr['coords'][ii, qm_index], axis=0)))
-        s_corr['coords'][ii, :, :] = wraped_coords
+        cell = Cell(s_corr["cells"][ii])
+        wraped_coords = wrap_positions(
+            s_corr["coords"][ii],
+            cell=s_corr["cells"][ii],
+            pbc=True,
+            center=cell.scaled_positions(
+                np.mean(s_corr["coords"][ii, qm_index], axis=0)
+            ),
+        )
+        s_corr["coords"][ii, :, :] = wraped_coords
 
     s_corr = s_corr.pick_by_amber_mask(
-        parmfile, interactwith, pass_coords=True, nopbc=True)
+        parmfile, interactwith, pass_coords=True, nopbc=True
+    )
     for ss in s_corr:
-        if 'EP' in ss['atom_names']:
-            ss = ss.remove_atom_names('EP')
+        if "EP" in ss["atom_names"]:
+            ss = ss.remove_atom_names("EP")
         ms.append(ss)
 
     if out:
@@ -89,12 +110,13 @@ def get_amber_fp(cutoff: float,
 
 
 def run(args):
-    get_amber_fp(cutoff=args.cutoff,
-                 parmfile=args.parm7_file,
-                 ncfile=args.nc,
-                 ll=args.ll,
-                 hl=args.hl,
-                 target=args.qm_region,
-                 out=args.out,
-                 suffix_mdfrc=args.suffix_mdfrc,
-                 )
+    get_amber_fp(
+        cutoff=args.cutoff,
+        parmfile=args.parm7_file,
+        ncfile=args.nc,
+        ll=args.ll,
+        hl=args.hl,
+        target=args.qm_region,
+        out=args.out,
+        suffix_mdfrc=args.suffix_mdfrc,
+    )
