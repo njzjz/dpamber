@@ -15,7 +15,8 @@ dependencies = [
     "dpdata[amber]>=0.2.2",
     "deepmd-kit",
     "tqdm",
-    "parmed",
+    'parmed>=4; python_version >= "3.8"',
+    'parmed<4; python_version < "3.8"',
     "ase",
     "scipy",
 ]
