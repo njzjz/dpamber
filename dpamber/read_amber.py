@@ -163,7 +163,7 @@ class AmberMDQMMMFormat(AmberMDFormat):
         mden_file=None,
         mdout_file=None,
         qm_region=None,
-        **kwargs
+        **kwargs,
     ):
         # assume the prefix is the same if the spefic name is not given
         if parm7_file is None:
