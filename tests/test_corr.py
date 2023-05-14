@@ -6,23 +6,25 @@ import pytest
 
 from dpamber.corr import get_amber_fp
 
+
 @pytest.fixture
 def test_system() -> dpdata.MultiSystems:
     """Tested system."""
     return dpdata.MultiSystems().from_deepmd_raw(
-        Path(__file__).parent / "corr" / "dataset")
+        Path(__file__).parent / "corr" / "dataset"
+    )
 
 
 def system_is_equal(sys1: dpdata.LabeledSystem, sys2: dpdata.LabeledSystem):
     """Check if two systems are equal.
-    
+
     Parameters
     ----------
     sys1: dpdata.LabeledSystem
         The first system.
     sys2: dpdata.LabeledSystem
         The second system.
-    
+
     Raises
     ------
     AssertionError
@@ -40,12 +42,12 @@ def system_is_equal(sys1: dpdata.LabeledSystem, sys2: dpdata.LabeledSystem):
 
 def get_single_system(multi: dpdata.MultiSystems) -> dpdata.LabeledSystem:
     """Assume the multi-system contains only one system.
-    
+
     Parameters
     ----------
     multi: dpdata.MultiSystems
         The multi-system.
-    
+
     Returns
     -------
     dpdata.LabeledSystem
@@ -59,7 +61,7 @@ def test_corr(test_system):
     get_amber_fp(
         cutoff=6.0,
         parmfile=str(Path(__file__).parent / "corr/qmmm.parm7"),
-        ncfile=str(Path(__file__).parent /"corr/rc.nc"),
+        ncfile=str(Path(__file__).parent / "corr/rc.nc"),
         ll=str(Path(__file__).parent / "corr/high_level"),
         hl=str(Path(__file__).parent / "corr/low_level"),
         target=":1",
@@ -75,7 +77,7 @@ def test_corr_hdf5(test_system):
     get_amber_fp(
         cutoff=6.0,
         parmfile=str(Path(__file__).parent / "corr/qmmm.parm7"),
-        ncfile=str(Path(__file__).parent /"corr/rc.nc"),
+        ncfile=str(Path(__file__).parent / "corr/rc.nc"),
         ll=str(Path(__file__).parent / "corr/high_level"),
         hl=str(Path(__file__).parent / "corr/low_level"),
         target=":1",
