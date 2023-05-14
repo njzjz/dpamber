@@ -67,7 +67,7 @@ def test_corr(test_system):
         target=":1",
         out="tmp_data",
     )
-    tmp_system = dpdata.MultiSystems().from_deepmd_hdf5("tmp_data.hdf5")
+    tmp_system = dpdata.MultiSystems().from_deepmd_npy("tmp_data")
     tmp_system_single = get_single_system(tmp_system)
     test_system_single = get_single_system(test_system)
     system_is_equal(tmp_system_single, test_system_single)
@@ -83,7 +83,7 @@ def test_corr_hdf5(test_system):
         target=":1",
         out="tmp_data.hdf5",
     )
-    tmp_system = dpdata.MultiSystems().from_deepmd_npy("tmp_data")
+    tmp_system = dpdata.MultiSystems().from_deepmd_hdf5("tmp_data.hdf5")
     tmp_system_single = get_single_system(tmp_system)
     test_system_single = get_single_system(test_system)
     system_is_equal(tmp_system_single, test_system_single)
