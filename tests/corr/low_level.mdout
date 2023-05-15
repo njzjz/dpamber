@@ -12,112 +12,112 @@
   [-O]verwriting output
 
 File Assignments:
-|  MDIN: low_level.mdin                                                        
-| MDOUT: low_level.mdout                                                       
-|INPCRD: init.rst7                                                             
-|  PARM: qmmm.parm7                                                            
-|RESTRT: low_level.rst7                                                        
-|  REFC: refc                                                                  
-| MDVEL: mdvel                                                                 
-| MDFRC: low_level.mdfrc                                                       
-|  MDEN: low_level.mden                                                        
-| MDCRD: low_level.nc                                                          
-|MDINFO: low_level.mdinfo                                                      
-|  MTMD: mtmd                                                                  
-|INPDIP: inpdip                                                                
-|RSTDIP: rstdip                                                                
-|INPTRA: rc.nc                                                                 
+|  MDIN: low_level.mdin
+| MDOUT: low_level.mdout
+|INPCRD: init.rst7
+|  PARM: qmmm.parm7
+|RESTRT: low_level.rst7
+|  REFC: refc
+| MDVEL: mdvel
+| MDFRC: low_level.mdfrc
+|  MDEN: low_level.mden
+| MDCRD: low_level.nc
+|MDINFO: low_level.mdinfo
+|  MTMD: mtmd
+|INPDIP: inpdip
+|RSTDIP: rstdip
+|INPTRA: rc.nc
 
 |    REMLOG: rem.log
 |   REMTYPE: rem.type
-|  REMSTRIP: 
+|  REMSTRIP:
 |   SAVEENE: saveene
 |CLUSTERINF: cluster.info
 | RESERVOIR: reserv/frame
-|   REMDDIM: 
+|   REMDDIM:
 
 
  Here is the input file:
 
-title                                                                          
-&cntrl                                                                         
-! IO =======================================                                   
-      irest = 0       ! 0 = start, 1 = restart                                 
-        ntx = 1       ! 1 = start, 5 = restart                                 
-       ntxo = 1       ! read/write rst as formatted file                       
-      iwrap = 1       ! wrap crds to unit cell                                 
-     ioutfm = 1       ! write mdcrd as netcdf                                  
-       imin = 6                                                                
-      ntmin = 0                                                                
-       ntpr = 1                                                                
-       ntwr = 0                                                                
-       ntwx = 0                                                                
-       ntwf = 1                                                                
-	   ntwe = 1                                                                   
-! DYNAMICS =================================                                   
-     nstlim = 100000   ! number of time steps                                  
-         dt = 0.001   ! ps/step                                                
-        ntb = 1       ! 1=NVT periodic, 2=NPT periodic, 0=no box               
-! TEMPERATURE ==============================                                   
-      temp0 = 298     ! target temp                                            
-   gamma_ln = 5.0     ! Langevin collision freq                                
-        ntt = 3       ! thermostat (3=Langevin)                                
-! PRESSURE  ================================                                   
-        ntp = 0       ! 0=no scaling, 1=isotropic, 2=anisotropic               
-! SHAKE ====================================                                   
-        ntc = 2       ! 1=no shake, 2=HX constrained, 3=all constrained        
-noshakemask = ":1"    ! do not shake these                                     
+title
+&cntrl
+! IO =======================================
+      irest = 0       ! 0 = start, 1 = restart
+        ntx = 1       ! 1 = start, 5 = restart
+       ntxo = 1       ! read/write rst as formatted file
+      iwrap = 1       ! wrap crds to unit cell
+     ioutfm = 1       ! write mdcrd as netcdf
+       imin = 6
+      ntmin = 0
+       ntpr = 1
+       ntwr = 0
+       ntwx = 0
+       ntwf = 1
+	   ntwe = 1
+! DYNAMICS =================================
+     nstlim = 100000   ! number of time steps
+         dt = 0.001   ! ps/step
+        ntb = 1       ! 1=NVT periodic, 2=NPT periodic, 0=no box
+! TEMPERATURE ==============================
+      temp0 = 298     ! target temp
+   gamma_ln = 5.0     ! Langevin collision freq
+        ntt = 3       ! thermostat (3=Langevin)
+! PRESSURE  ================================
+        ntp = 0       ! 0=no scaling, 1=isotropic, 2=anisotropic
+! SHAKE ====================================
+        ntc = 2       ! 1=no shake, 2=HX constrained, 3=all constrained
+noshakemask = ":1"    ! do not shake these
         ntf = 1       ! 1=cpt all bond E, 2=ignore HX bond E, 3=ignore all bond E
-! MISC =====================================                                   
-        cut = 9.0                                                              
-      ifqnt = 1                                                                
-         ig = -1                                                               
-     nmropt = 0                                                                
-/                                                                              
-&wt                                                                            
-type='DUMPFREQ', istep1=50                                                     
-&end                                                                           
-&wt                                                                            
-  type='END',                                                                  
-&end                                                                           
-DISANG=TEMPLATE.disang                                                         
-DUMPAVE=TEMPLATE.dumpave                                                       
-                                                                               
-&ewald                                                                         
-  dsum_tol = 1.e-6                                                             
-/                                                                              
-                                                                               
-&qmmm                                                                          
-    qm_theory   = 'MNDOD'                                                      
-        qmmask  = ':1'                                                         
-      qmcharge  = -2                                                           
-          spin  = 1                                                            
-       qmshake  = 0                                                            
-      qm_ewald  = 1                                                            
-   qmmm_switch  = 1                                                            
-       scfconv  = 1.e-10                                                       
-     verbosity  = 0                                                            
-  tight_p_conv  = 1                                                            
-  diag_routine  = 0                                                            
-   pseudo_diag  = 1                                                            
-  dftb_maxiter  = 100                                                          
-/                                                                              
-                                                                               
-&ml                                                                            
-  iml=0                                                                        
-  mlmask=":1"                                                                  
-  rcut = 6.0                                                                   
-  ! intermask=":1<:5.0 &! (@%EP|:1)"                                           
-  intrafile=""                                                                 
-  interfile=""                                                                 
-/                                                                              
-                                                                               
+! MISC =====================================
+        cut = 9.0
+      ifqnt = 1
+         ig = -1
+     nmropt = 0
+/
+&wt
+type='DUMPFREQ', istep1=50
+&end
+&wt
+  type='END',
+&end
+DISANG=TEMPLATE.disang
+DUMPAVE=TEMPLATE.dumpave
+
+&ewald
+  dsum_tol = 1.e-6
+/
+
+&qmmm
+    qm_theory   = 'MNDOD'
+        qmmask  = ':1'
+      qmcharge  = -2
+          spin  = 1
+       qmshake  = 0
+      qm_ewald  = 1
+   qmmm_switch  = 1
+       scfconv  = 1.e-10
+     verbosity  = 0
+  tight_p_conv  = 1
+  diag_routine  = 0
+   pseudo_diag  = 1
+  dftb_maxiter  = 100
+/
+
+&ml
+  iml=0
+  mlmask=":1"
+  rcut = 6.0
+  ! intermask=":1<:5.0 &! (@%EP|:1)"
+  intrafile=""
+  interfile=""
+/
+
 
 --------------------------------------------------------------------------------
-   1.  RESOURCE   USE: 
+   1.  RESOURCE   USE:
 --------------------------------------------------------------------------------
 
-| Flags: MPI                                                                    
+| Flags: MPI
  getting new box info from bottom of inpcrd
 |  INFO: Old style inpcrd file read
 
@@ -160,7 +160,7 @@ Note: ig = -1. Setting random seed to   624157 based on wallclock time in micros
    2.  CONTROL  DATA  FOR  THE  RUN
 --------------------------------------------------------------------------------
 
-MOL                                                                             
+MOL
 
 General flags:
      imin    =       6, nmropt  =       0
@@ -214,11 +214,11 @@ QMMM options:
       tight_p_conv = True (converge density to SCFCRT)
            scfconv = 0.100E-09  itrmax =     1000
       printcharges = False      printdipole = False      peptide_corr = False
-    qmmmrij_incore = True 
-  qmqm_erep_incore = True 
+    qmmmrij_incore = True
+  qmqm_erep_incore = True
        pseudo_diag = True pseudo_diag_criteria =   0.0500
       diag_routine =        0
-          qm_ewald =        1 qm_pme = True 
+          qm_ewald =        1 qm_pme = True
             kmaxqx =    8 kmaxqy =    8 kmaxqz =    8 ksqmaxq =  100
        qmmm_switch = True   r_switch_lo =  7.0000   r_switch_hi =  9.0000
 
@@ -254,7 +254,7 @@ Noshake mask :1; matches    24 atoms
    3.  ATOMIC COORDINATES AND VELOCITIES
 --------------------------------------------------------------------------------
 
-MOL                                                                             
+MOL
  begin time read from input coords =     3.000 ps
 
  Number of triangulated 3-point waters found:     1510
@@ -289,7 +289,7 @@ Warning: In netcdf file, expected angstrom for attribute units, got Angstrom
 Warning: NetCDF trajectory has no time values.
 TRAJENE: Frames in trajectory=     1
 TRAJENE: Atoms in trajectory=  6064
-MOL                                                                             
+MOL
 minimizing coord set #     1
 |  # of SOLUTE  degrees of freedom (RNDFP):   13662.
 |  # of SOLVENT degrees of freedom (RNDFS):       0.
@@ -315,7 +315,7 @@ QMMM: ------------------------------------------------------------------------
 QMMM: nlink =     0
 QMMM: ------------------------------------------------------------------------
 
-  QMMM: QM Region Cartesian Coordinates (*=link atom) 
+  QMMM: QM Region Cartesian Coordinates (*=link atom)
   QMMM: QM_NO.   MM_NO.  ATOM         X         Y         Z
   QMMM:     1        1      H        1.4199    0.2505   -1.5901
   QMMM:     2        2      C        0.6390   -0.3668   -1.0207
@@ -352,8 +352,8 @@ QMMM: ------------------------------------------------------------------------
 QMMM: SINGLET STATE CALCULATION
 QMMM: RHF CALCULATION, NO. OF DOUBLY OCCUPIED LEVELS = 39
 
-| QMMM: *** Selected Hamiltonian *** 
-| QMMM: MNDO/D      
+| QMMM: *** Selected Hamiltonian ***
+| QMMM: MNDO/D
 
 | QMMM: *** Parameter sets in use ***
 | QMMM: H : M.J.S.DEWAR et al. JACS, 99, 4899, (1977)
@@ -499,7 +499,7 @@ TRAJENE: Trajene complete.
 |     wallclock() was called    1473 times
 
 |3D-RISM memory allocation summary
-|Type          Maximum        Current   
+|Type          Maximum        Current
 |Integer       0.00000 GB     0.00000 GB
 |Real          0.00000 GB     0.00000 GB
 |Logical       0.00000 GB     0.00000 GB
