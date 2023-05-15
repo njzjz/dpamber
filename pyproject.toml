@@ -32,4 +32,10 @@ dpamber = "dpamber.cli:run"
 [project.entry-points."dpdata.plugins"]
 amber_md_qmmm = "dpamber.read_amber:AmberMDQMMMFormat"
 
+[project.optional-dependencies]
+test = [
+    'pytest',
+    'pytest-cov',
+]
+
 [tool.setuptools_scm]
