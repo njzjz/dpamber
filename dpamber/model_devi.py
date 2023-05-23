@@ -1,6 +1,6 @@
 """Calculate model deviation of the Amber MD traj."""
-import numpy as np
 import dpdata
+import numpy as np
 from dpdata.amber.mask import load_param_file
 from tqdm import tqdm
 
@@ -8,8 +8,7 @@ from tqdm import tqdm
 def calculate_devi(
     models: list, cutoff: float, parm7_file: str = "qmmm.parm7", qm_region: str = ":1"
 ):
-    """
-    Parameters
+    """Parameters
     ----------
     models: ["graph.0.pb", "graph.1.pb"]
     """
@@ -22,7 +21,7 @@ def calculate_devi(
         "rc", parm7_file=parm7_file, fmt="amber/md", use_element_symbols=":1"
     )
     parm7 = load_param_file(parm7_file)
-    interactwith = "(%s)<@%f&!%s" % (qm_region, cutoff, r"@%EP")
+    interactwith = "({})<@{:f}&!{}".format(qm_region, cutoff, r"@%EP")
 
     stds = []
     for ii, ssy in enumerate(tqdm(sy)):

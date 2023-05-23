@@ -1,14 +1,14 @@
-import re
 import os
-from scipy.io import netcdf
-import numpy as np
-from dpdata.amber.mask import pick_by_amber_mask
-from dpdata.unit import EnergyConversion
-from dpdata.periodic_table import ELEMENTS
-from dpdata.format import Format
-from dpdata.plugins.amber import AmberMDFormat
-from ase.geometry import cellpar_to_cell
+import re
 
+import numpy as np
+from ase.geometry import cellpar_to_cell
+from dpdata.amber.mask import pick_by_amber_mask
+from dpdata.format import Format
+from dpdata.periodic_table import ELEMENTS
+from dpdata.plugins.amber import AmberMDFormat
+from dpdata.unit import EnergyConversion
+from scipy.io import netcdf
 
 kcalmol2eV = EnergyConversion("kcal_mol", "eV").value()
 symbols = ["X"] + ELEMENTS
@@ -26,12 +26,14 @@ def read_amber_traj(
     qm_region=None,
     labeled=True,
 ):
-    """The amber trajectory includes:
+    """Read amber trajectory.
+
+    The amber trajectory includes:
     * nc, NetCDF format, stores coordinates
     * mdfrc, NetCDF format, stores forces
     * mden (optional), text format, stores energies
     * mdout (optional), text format, may store energies if there is no mden_file
-    * parm7, text format, stores types
+    * parm7, text format, stores types.
 
     Parameters
     ----------
@@ -39,8 +41,9 @@ def read_amber_traj(
       filenames
     qm_region: None or list or str
       amber mask
+    labeled: bool
+      the output is a dpdata.LabeledSystem or dpdata.System
     """
-
     flag_atom_type = False
     flag_atom_numb = False
     amber_types = []

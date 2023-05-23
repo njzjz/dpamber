@@ -1,8 +1,9 @@
+from typing import Union
+
 import dpdata
 import numpy as np
+from ase.geometry import Cell, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
-from ase.geometry import wrap_positions, Cell
-from typing import Union
 
 
 def get_amber_fp(
@@ -47,7 +48,7 @@ def get_amber_fp(
     ms = dpdata.MultiSystems()
     ep = r"@%EP"
     if cutoff > 0.0:
-        interactwith = "(%s)<@%f&!%s" % (target, cutoff, ep)
+        interactwith = f"({target})<@{cutoff:f}&!{ep}"
     else:
         interactwith = target
 

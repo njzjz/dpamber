@@ -1,7 +1,8 @@
-import dpdata
-from dpdata.amber.mask import load_param_file, pick_by_amber_mask
-import parmed.tools as PT
 from copy import copy
+
+import dpdata
+import parmed.tools as PT
+from dpdata.amber.mask import load_param_file, pick_by_amber_mask
 
 
 def qmbuffer(
@@ -13,11 +14,10 @@ def qmbuffer(
     target: str = ":1",
     targetcharge: int = -2,
 ):
+    """Assume there is only one frame.
+    cutoff = 4.5.
     """
-    Assume there is only one frame.
-    cutoff = 4.5
-    """
-    mask_str = "((%s)<:%.1f) & !(%s)" % (target, cutoff, target)
+    mask_str = f"(({target})<:{cutoff:.1f}) & !({target})"
     s = dpdata.System(
         "",
         nc_file=ncfile,
@@ -40,7 +40,7 @@ def qmbuffer(
     parm_qm = copy(parm)
     parm_qm, nwater = remove_epw(parm_qm, new_nearby_idx)
     water_mask = "(:2-%d)" % (nwater + 1)
-    qmmask = "(%s)|(%s)" % (target, water_mask)
+    qmmask = f"({target})|({water_mask})"
     sort_parm(parm_qm)
     write_parm(parm_qm, "qmwater", hl_mdinfile, qmmask, target, charge=targetcharge)
 
@@ -68,7 +68,7 @@ def qmbuffer(
 
 
 def label_atoms(parm, target_idx, qmwater_idx):
-    """set qwt"""
+    """Set qwt."""
     for ii in range(len(parm.atoms)):
         atom = parm.atoms[ii]
         if ii in target_idx:
@@ -80,7 +80,7 @@ def label_atoms(parm, target_idx, qmwater_idx):
 
 
 def remove_epw(parm, idx):
-    """Remove all EP atoms in water in idx"""
+    """Remove all EP atoms in water in idx."""
     nwater = 0
     ep = []
     for ii in idx:
