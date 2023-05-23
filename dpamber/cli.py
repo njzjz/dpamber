@@ -1,7 +1,7 @@
 import argparse
 
-from .model_devi import run as model_devi_run
 from .corr import run as corr_run
+from .model_devi import run as model_devi_run
 from .qmbuffer import run as qmwater_run
 from .qmwater_corr import run as qmwater_corr_run
 

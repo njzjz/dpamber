@@ -8,12 +8,12 @@ def get_amber_fp(
     out: str = None,
 ) -> dpdata.MultiSystems:
     """(qmwater-qmwater_not)-(mmwater-mmwater_not)
-    = (qmwater-mmwater) - (qmwater_not-mmwater_not)
+    = (qmwater-mmwater) - (qmwater_not-mmwater_not).
     """
     ms = dpdata.MultiSystems()
     ep = r"@%EP"
     if cutoff > 0.0:
-        interactwith = "(%s)<@%f&!%s" % (target, cutoff, ep)
+        interactwith = f"({target})<@{cutoff:f}&!{ep}"
     else:
         interactwith = target
 
