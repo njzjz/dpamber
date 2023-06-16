@@ -65,3 +65,7 @@ ignore = [
     "D213", # multi-line docstring summary should start at the second line
     "D205", # 1 blank line required between summary line and description
 ]
+
+[tool.coverage.report]
+show_missing = true
+omit = ["*test*"]
