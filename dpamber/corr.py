@@ -66,6 +66,7 @@ def get_amber_fp(
         parm7_file=parmfile,
         fmt="amber/md/qmmm",
         qm_region=target,
+        exclude_unconverged=False,
     )
     s_hl = dpdata.LabeledSystem(
         hl,
@@ -74,12 +75,20 @@ def get_amber_fp(
         parm7_file=parmfile,
         fmt="amber/md/qmmm",
         qm_region=target,
+        exclude_unconverged=False,
     )
     if idx is not None:
         s_ll = s_ll[idx]
         s_hl = s_hl[idx]
 
     s_corr = s_ll.correction(s_hl)
+
+    # remove unconverged frames
+    idx_pick = ~np.logical_or(
+        np.isnan(s_corr["energies"]), np.isnan(s_corr["forces"]).any(axis=(1, 2))
+    )
+    s_corr = s_corr[idx_pick]
+
     # wrap the coords...
     qm_index = pick_by_amber_mask(parmfile, target)
     for ii in range(len(s_corr)):
