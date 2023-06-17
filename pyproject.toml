@@ -35,6 +35,7 @@ amber_md_qmmm = "dpamber.read_amber:AmberMDQMMMFormat"
 test = [
     'pytest',
     'pytest-cov',
+    'pytest-mock',
     'deepmd-kit>=2.2.2',
 ]
 dpcpu = [
