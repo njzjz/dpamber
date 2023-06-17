@@ -17,7 +17,12 @@ def test_model_devi(mocker):
 
     # spy.assert_called_once_with(21)
 
-    prefix = str(Path(__file__).parent / "corr/rc")
-    calculate_devi(["graph.0.pb", "graph.1.pb"], 6, "corr/qmmm.parm7", ":1", prefix)
+    calculate_devi(
+        ["graph.0.pb", "graph.1.pb"],
+        6,
+        str(Path(__file__).parent / "corr/qmmm.parm7"),
+        ":1",
+        str(Path(__file__).parent / "corr/rc"),
+    )
     x = np.loadtxt("model_devi.out", ndmin=2)
     assert x.shape == (1, 8)
