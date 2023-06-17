@@ -2,6 +2,7 @@ on: [push, pull_request]
 name: Release to pypi
 jobs:
   release-to-pypi:
-    uses: deepmodeling/workflows/.github/workflows/release-to-pypi.yml@main
-    secrets:
-      PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
+    permissions:
+        # IMPORTANT: this permission is mandatory for trusted publishing
+        id-token: write
+    uses: deepmodeling/workflows/.github/workflows/release-to-pypi-id-token.yml@main
