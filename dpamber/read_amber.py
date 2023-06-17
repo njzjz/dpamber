@@ -115,7 +115,10 @@ def read_amber_traj(
                         == "QMMM SCC-DFTB: Convergence could not be achieved in this step."
                     ):
                         is_coverage = False
-                    if "EPtot" in line:
+                    elif line.strip().startswith("A V E R A G E S   O V E R"):
+                        # end of MD simulation
+                        break
+                    elif "EPtot" in line:
                         if is_coverage:
                             s = line.split()
                             energies.append(float(s[-1]))
