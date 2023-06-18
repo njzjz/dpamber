@@ -25,6 +25,7 @@ def read_amber_traj(
     mdout_file=None,
     qm_region=None,
     labeled=True,
+    exclude_unconverged=True,
 ):
     """Read amber trajectory.
 
@@ -38,11 +39,13 @@ def read_amber_traj(
     Parameters
     ----------
     parm7_file, nc_file, mdfrc_file, mden_file, mdout_file: str
-      filenames
+        filenames
     qm_region: None or list or str
-      amber mask
+        amber mask
     labeled: bool
-      the output is a dpdata.LabeledSystem or dpdata.System
+        the output is a dpdata.LabeledSystem or dpdata.System
+    exclude_unconverged: bool
+        exclude unconverged frames
     """
     flag_atom_type = False
     flag_atom_numb = False
@@ -103,19 +106,29 @@ def read_amber_traj(
 
         # load energy from mden_file or mdout_file
         energies = []
-        if mden_file is not None and os.path.isfile(mden_file):
+        if mdout_file is not None and os.path.isfile(mdout_file):
+            is_coverage = True
+            with open(mdout_file) as f:
+                for line in f:
+                    if (
+                        line.strip()
+                        == "QMMM SCC-DFTB: Convergence could not be achieved in this step."
+                    ):
+                        is_coverage = False
+                    if "EPtot" in line:
+                        if is_coverage:
+                            s = line.split()
+                            energies.append(float(s[-1]))
+                        else:
+                            energies.append(np.nan)
+                            is_coverage = True
+        elif mden_file is not None and os.path.isfile(mden_file):
             with open(mden_file) as f:
                 for line in f:
                     if line.startswith("L6"):
                         s = line.split()
                         if s[2] != "E_pot":
                             energies.append(float(s[2]))
-        elif mdout_file is not None and os.path.isfile(mdout_file):
-            with open(mdout_file) as f:
-                for line in f:
-                    if "EPtot" in line:
-                        s = line.split()
-                        energies.append(float(s[-1]))
         else:
             raise RuntimeError("Please provide one of mden_file and mdout_file")
 
@@ -127,16 +140,20 @@ def read_amber_traj(
     data["atom_names"] = list(atom_names)
     data["atom_numbs"] = list(atom_numbs)
     data["atom_types"] = atom_types
-    if labeled:
-        if np.isnan(forces).any() or np.isnan(energies).any():
-            return {
-                "energies": [],
-                "forces": [],
-            }
-        data["forces"] = forces * force_convert
-        data["energies"] = np.array(energies) * energy_convert
     data["coords"] = coords
     data["cells"] = cells
+    if labeled:
+        data["forces"] = forces * force_convert
+        data["energies"] = np.array(energies) * energy_convert
+        if exclude_unconverged:
+            # exclude nan index
+            idx_pick = ~np.logical_or(
+                np.isnan(data["energies"]), np.isnan(data["forces"]).any(axis=(1, 2))
+            )
+            data["coords"] = data["coords"][idx_pick, :, :]
+            data["cells"] = data["cells"][idx_pick, :, :]
+            data["energies"] = data["energies"][idx_pick]
+            data["forces"] = data["forces"][idx_pick, :, :]
     data["orig"] = np.array([0, 0, 0])
     if nopbc:
         data["nopbc"] = True
@@ -166,6 +183,7 @@ class AmberMDQMMMFormat(AmberMDFormat):
         mden_file=None,
         mdout_file=None,
         qm_region=None,
+        exclude_unconverged=True,
         **kwargs,
     ):
         # assume the prefix is the same if the spefic name is not given
@@ -180,5 +198,11 @@ class AmberMDQMMMFormat(AmberMDFormat):
         if mdout_file is None:
             mdout_file = file_name + ".mdout"
         return read_amber_traj(
-            parm7_file, nc_file, mdfrc_file, mden_file, mdout_file, qm_region
+            parm7_file,
+            nc_file,
+            mdfrc_file,
+            mden_file,
+            mdout_file,
+            qm_region,
+            exclude_unconverged=exclude_unconverged,
         )

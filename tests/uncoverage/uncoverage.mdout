@@ -1,0 +1,23 @@
+--------------------------------------------------------------------------------
+   4.  RESULTS
+--------------------------------------------------------------------------------
+
+
+ QMMM SCC-DFTB: !!!! ============= WARNING ============= !!!!
+ QMMM SCC-DFTB: Convergence could not be achieved in this step.
+ QMMM SCC-DFTB: The calculation will continue, but energies and
+ QMMM SCC-DFTB: forces for this step will not be accurate.
+
+ NSTEP =        0   TIME(PS) =       0.000  TEMP(K) =     0.00  PRESS =     0.0
+ Etot   =   -227844.5949  EKtot   =         0.0000  EPtot      =   -227844.5949
+ BOND   =      1769.5882  ANGLE   =      1130.7091  DIHED      =      1649.7991
+ 1-4 NB =       620.6952  1-4 EEL =     -7542.0708  VDWAALS    =     36913.8434
+ EELEC  =   -268846.5280  EHBOND  =         0.0000  RESTRAINT  =         0.0000
+ DFTBESCF=     6459.3690
+ Ewald error estimate:   0.2178E-01
+ ------------------------------------------------------------------------------
+
+minimization completed, EELEC=    0.0000000000000000E+00 RMS= 0.000000E+00
+minimization completed, ENE=    0.0000000000000000E+00 RMS= 0.000000E+00
+TRAJENE: Trajectory file ended
+TRAJENE: Trajene complete.
