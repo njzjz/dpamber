@@ -13,7 +13,6 @@ classifiers = [
 dependencies = [
     "numpy",
     "dpdata[amber]>=0.2.2",
-    "deepmd-kit",
     "tqdm",
     'parmed>=4; python_version >= "3.8"',
     'parmed<4; python_version < "3.8"',
@@ -36,6 +35,14 @@ amber_md_qmmm = "dpamber.read_amber:AmberMDQMMMFormat"
 test = [
     'pytest',
     'pytest-cov',
+    'pytest-mock',
+    'deepmd-kit>=2.2.2',
+]
+dpcpu = [
+    'deepmd-kit[cpu]>=2',
+]
+dpgpu = [
+    'deepmd-kit[gpu]>=2',
 ]
 
 [tool.setuptools_scm]

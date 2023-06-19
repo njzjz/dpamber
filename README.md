@@ -39,3 +39,13 @@ dpamber corr --cutoff 6. --qm_region ":1" --parm7_file some_param.param7 --nc so
 where `--cutoff` takes cutoff radius of the QM/MM interaction for training. `--qm_region` takes AMBER mask format for the QM region. `--parm7_file` and `--nc` take the PARM7 file and the trajectory (NetCDF) file, respectively. `--ll` and `--hl` are the prefixes of low-level and high-level files, including the mdout file (`.mdout`), the mden file (`.mden`) and the mdfrc file (`.mdfrc`). The output dataset directory should be put in `--out`.
 
 See details from `dpamber corr -h`.
+
+### model-devi: calculate model deviation
+
+`model-devi` can be used to calculate the model deviation of a given trajectory.
+You need to install DeePMD-kit using
+```sh
+pip install dpamber[dpgpu]
+```
+
+See `dpamber model-devi -h` for details.

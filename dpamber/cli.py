@@ -12,14 +12,18 @@ def run():
     parser_model_devi = subparsers.add_parser(
         "devi", help="Calculate model deviations."
     )
-    parser_model_devi.add_argument("--models", type=str, nargs="+", help="models")
-    parser_model_devi.add_argument("--cutoff", type=float, help="cutoff")
+    parser_model_devi.add_argument("--models", type=str, nargs="+", help="Models")
+    parser_model_devi.add_argument("--cutoff", type=float, help="QM/MM cutoff radius")
     parser_model_devi.add_argument(
-        "--parm7_file", type=str, default="qmmm.parm7", help="parm7_file"
+        "--parm7_file", type=str, default="qmmm.parm7", help="AMBER parm file"
     )
     parser_model_devi.add_argument(
-        "--qm_region", type=str, default=":1", help="qm_region"
+        "--qm_region",
+        type=str,
+        default=":1",
+        help="QM region with AMBER mask. Add quote if containing space",
     )
+    parser_model_devi.add_argument("--prefix", type=str, help="prefix to the .nc file")
     parser_model_devi.set_defaults(func=model_devi_run)
 
     parser_corr = subparsers.add_parser("corr", help="Generate systems for DPRc.")
