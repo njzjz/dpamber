@@ -40,12 +40,12 @@ where `--cutoff` takes cutoff radius of the QM/MM interaction for training. `--q
 
 See details from `dpamber corr -h`.
 
-### model-devi: calculate model deviation
+### devi: calculate model deviation
 
-`model-devi` can be used to calculate the model deviation of a given trajectory.
+`devi` can be used to calculate the model deviation of a given trajectory.
 You need to install DeePMD-kit using
 ```sh
 pip install dpamber[dpgpu]
 ```
 
-See `dpamber model-devi -h` for details.
+See `dpamber devi -h` for details.
