@@ -49,7 +49,8 @@ def calculate_devi(
     for ii, ss in enumerate(tqdm(sy)):
         ms = ss.pick_by_amber_mask(parm7, interactwith, pass_coords=True)
         ss = list(ms.systems.values())[0]
-        ss = ss.remove_atom_names("EP")
+        if "EP" in ss["atom_names"]:
+            ss = ss.remove_atom_names("EP")
         devi = calc_model_devi(ss["coords"], ss["cells"], ss["atom_types"], dps)
         devi[0, 0] = ii
         stds.append(devi)
