@@ -6,56 +6,59 @@ from tqdm import tqdm
 
 
 def calculate_devi(
-    models: list, cutoff: float, parm7_file: str = "qmmm.parm7", qm_region: str = ":1"
+    models: list,
+    cutoff: float,
+    parm7_file: str = "qmmm.parm7",
+    qm_region: str = ":1",
+    prefix: str = "rc",
 ):
-    """Parameters
+    """Calculate model deviation of the Amber MD traj.
+
+    Parameters
     ----------
-    models: ["graph.0.pb", "graph.1.pb"]
+    models: list[str]
+        models, for example ["graph.0.pb", "graph.1.pb"]
+    cutoff: float
+        The QM/MM cutoff radius.
+    parm7_file: str
+        The parm7 file.
+    qm_region: str
+        The QM system mask.
+    prefix: str
+        The prefix of MD files.
     """
     # Deep potentials
-    import deepmd.DeepPot as DeepPot
+    from deepmd.infer import DeepPot, calc_model_devi
 
     dps = [DeepPot(mm) for mm in models]
 
     sy = dpdata.System(
-        "rc", parm7_file=parm7_file, fmt="amber/md", use_element_symbols=":1"
+        file_name=prefix,
+        parm7_file=parm7_file,
+        fmt="amber/md/qmmm",
+        qm_region=qm_region,
     )
     parm7 = load_param_file(parm7_file)
-    interactwith = "({})<@{:f}&!{}".format(qm_region, cutoff, r"@%EP")
+    ep = r"@%EP"
+    if cutoff > 0.0:
+        interactwith = f"({qm_region})<@{cutoff:f}&!{ep}"
+    else:
+        interactwith = qm_region
 
     stds = []
-    for ii, ssy in enumerate(tqdm(sy)):
-        ssy = ssy.pick_by_amber_mask(parm7, maskstr=interactwith, pass_coords=True)
-        ssy = ssy[0]
-        ssy = ssy.remove_atom_names("EP")
-
-        results = [ssy.predict(dp).pick_by_amber_mask(parm7, qm_region) for dp in dps]
-        energies = [dp["energies"] for dp in results]
-        energies = np.array(list(energies))
-        forces = [dp["forces"] for dp in results]
-        forces = np.array(list(forces))
-        std_e_min = np.min(np.linalg.norm(np.std(energies, axis=0), axis=-1), axis=-1)
-        std_e_ave = np.mean(np.linalg.norm(np.std(energies, axis=0), axis=-1), axis=-1)
-        std_e_max = np.max(np.linalg.norm(np.std(energies, axis=0), axis=-1), axis=-1)
-        std_f_min = np.min(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
-        std_f_ave = np.mean(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
-        std_f_max = np.max(np.linalg.norm(np.std(forces, axis=0), axis=-1), axis=-1)
-        stds.append(
-            [
-                ii,
-                float(std_e_max),
-                float(std_e_min),
-                float(std_e_ave),
-                float(std_f_max),
-                float(std_f_min),
-                float(std_f_ave),
-            ]
-        )
-    stds = np.array(stds)
+    for ii, ss in enumerate(tqdm(sy)):
+        ms = ss.pick_by_amber_mask(parm7, interactwith, pass_coords=True)
+        ss = list(ms.systems.values())[0]
+        if "EP" in ss["atom_names"]:
+            ss = ss.remove_atom_names("EP")
+        devi = calc_model_devi(ss["coords"], ss["cells"], ss["atom_types"], dps)
+        devi[0, 0] = ii
+        stds.append(devi)
+    stds = np.concatenate(stds)
     np.savetxt(
         "model_devi.out",
         stds,
-        header="step max_devi_e min_devi_e avg_devi_e max_devi_f min_devi_f avg_devi_f",
+        header="step max_devi_v min_devi_v avg_devi_v max_devi_f min_devi_f avg_devi_f devi_e",
     )
 
 
@@ -65,4 +68,5 @@ def run(args):
         cutoff=args.cutoff,
         parm7_file=args.parm7_file,
         qm_region=args.qm_region,
+        prefix=args.prefix,
     )
