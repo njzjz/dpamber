@@ -1,3 +1,4 @@
+import shutil
 from pathlib import Path
 
 import dpdata
@@ -87,3 +88,51 @@ def test_corr_hdf5(test_system):
     tmp_system_single = get_single_system(tmp_system)
     test_system_single = get_single_system(test_system)
     system_is_equal(tmp_system_single, test_system_single)
+
+
+def test_md_corr(test_system):
+    shutil.copyfile(
+        Path(__file__).parent / "corr/low_level.mdfrc",
+        Path(__file__).parent / "md/md.mdfrc",
+    )
+    get_amber_fp(
+        cutoff=6.0,
+        parmfile=str(Path(__file__).parent / "corr/qmmm.parm7"),
+        ncfile=str(Path(__file__).parent / "corr/rc.nc"),
+        ll=str(Path(__file__).parent / "corr/high_level"),
+        hl=str(Path(__file__).parent / "md/md"),
+        target=":1",
+        out="tmp_data",
+    )
+    tmp_system = dpdata.MultiSystems().from_deepmd_npy("tmp_data")
+    tmp_system_single = get_single_system(tmp_system)
+    test_system_single = get_single_system(test_system)
+    system_is_equal(tmp_system_single, test_system_single)
+
+
+def test_uncoverage_system():
+    tmp_system = dpdata.LabeledSystem(
+        str(Path(__file__).parent / "uncoverage/uncoverage"),
+        nc_file=str(Path(__file__).parent / "corr/rc.nc"),
+        mdfrc_file=str(Path(__file__).parent / "corr/low_level.mdfrc"),
+        parm7_file=str(Path(__file__).parent / "corr/qmmm.parm7"),
+        fmt="amber/md/qmmm",
+        qm_region=":1",
+    )
+    assert len(tmp_system) == 0
+
+
+def test_uncoverage_corr():
+    shutil.copyfile(
+        Path(__file__).parent / "corr/low_level.mdfrc",
+        Path(__file__).parent / "uncoverage/uncoverage.mdfrc",
+    )
+    tmp_system = get_amber_fp(
+        cutoff=6.0,
+        parmfile=str(Path(__file__).parent / "corr/qmmm.parm7"),
+        ncfile=str(Path(__file__).parent / "corr/rc.nc"),
+        ll=str(Path(__file__).parent / "corr/high_level"),
+        hl=str(Path(__file__).parent / "uncoverage/uncoverage"),
+        target=":1",
+    )
+    assert len(tmp_system) == 0

@@ -2,7 +2,7 @@ from typing import Union
 
 import dpdata
 import numpy as np
-from ase.geometry import Cell, wrap_positions
+from ase.geometry import Cell, get_distances, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
 from dpdata.system import System, LabeledSystem, DataType, Axis
 
@@ -75,6 +75,7 @@ def get_amber_fp(
         parm7_file=parmfile,
         fmt="amber/md/qmmm",
         qm_region=target,
+        exclude_unconverged=False,
     )
     s_hl = dpdata.LabeledSystem(
         hl,
@@ -83,23 +84,34 @@ def get_amber_fp(
         parm7_file=parmfile,
         fmt="amber/md/qmmm",
         qm_region=target,
+        exclude_unconverged=False,
     )
     if idx is not None:
         s_ll = s_ll[idx]
         s_hl = s_hl[idx]
 
     s_corr = s_ll.correction(s_hl)
+
+    # remove unconverged frames
+    idx_pick = ~np.logical_or(
+        np.isnan(s_corr["energies"]), np.isnan(s_corr["forces"]).any(axis=(1, 2))
+    )
+    s_corr = s_corr[idx_pick]
+
     # wrap the coords...
     qm_index = pick_by_amber_mask(parmfile, target)
+    qm_coords = s_corr["coords"][:, qm_index, :]
     for ii in range(len(s_corr)):
         cell = Cell(s_corr["cells"][ii])
+        qm_coord = qm_coords[ii]
+        qm_distances = get_distances(qm_coord, cell=cell, pbc=True)[1]
+        # find the coord that has the minimal total distance as the center
+        center = qm_coords[ii, np.argmin(np.sum(qm_distances, axis=1))]
         wraped_coords = wrap_positions(
             s_corr["coords"][ii],
             cell=s_corr["cells"][ii],
             pbc=True,
-            center=cell.scaled_positions(
-                np.mean(s_corr["coords"][ii, qm_index], axis=0)
-            ),
+            center=cell.scaled_positions(center),
         )
         s_corr["coords"][ii, :, :] = wraped_coords
 

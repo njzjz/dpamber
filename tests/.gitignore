@@ -1,2 +1,4 @@
 tmp_data/
 tmp_data.hdf5
+uncoverage/uncoverage.mdfrc
+md/md.mdfrc
