@@ -5,6 +5,7 @@ import dpdata
 import numpy as np
 import pytest
 
+import dpamber.aparam as _  # noqa: F401
 from dpamber.corr import get_amber_fp
 
 
@@ -39,6 +40,7 @@ def system_is_equal(sys1: dpdata.LabeledSystem, sys2: dpdata.LabeledSystem):
     np.testing.assert_almost_equal(sys1["cells"], sys2["cells"])
     np.testing.assert_almost_equal(sys1["energies"], sys2["energies"])
     np.testing.assert_almost_equal(sys1["forces"], sys2["forces"])
+    np.testing.assert_almost_equal(sys1["aparam"], sys2["aparam"])
 
 
 def get_single_system(multi: dpdata.MultiSystems) -> dpdata.LabeledSystem:
