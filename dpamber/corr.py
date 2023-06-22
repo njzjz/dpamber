@@ -4,16 +4,9 @@ import dpdata
 import numpy as np
 from ase.geometry import Cell, get_distances, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
-from dpdata.system import System, LabeledSystem, DataType, Axis
 
+import dpamber.aparam as _  # noqa: F401
 
-# support aparam
-System.DTYPES = System.DTYPES + (
-    DataType("aparam", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 1), required=False),
-)
-LabeledSystem.DTYPES = LabeledSystem.DTYPES + (
-    DataType("aparam", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 1), required=False),
-)
 
 def get_amber_fp(
     cutoff: float,

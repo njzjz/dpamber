@@ -49,14 +49,17 @@ def read_amber_traj(
     """
     flag_atom_type = False
     flag_atom_numb = False
+    flag_residue_pointer = False
     amber_types = []
     atomic_number = []
+    residue_pointer = []
     with open(parm7_file) as f:
         for line in f:
             if line.startswith("%FLAG"):
                 flag_atom_type = line.startswith("%FLAG AMBER_ATOM_TYPE")
                 flag_atom_numb = line.startswith("%FLAG ATOMIC_NUMBER")
-            elif flag_atom_type or flag_atom_numb:
+                flag_residue_pointer = line.startswith("%FLAG RESIDUE_POINTER")
+            elif flag_atom_type or flag_atom_numb or flag_residue_pointer:
                 if line.startswith("%FORMAT"):
                     fmt = re.findall(r"\d+", line)
                     fmt0 = int(fmt[0])
@@ -72,6 +75,8 @@ def read_amber_traj(
                             amber_types.append(content)
                         elif flag_atom_numb:
                             atomic_number.append(int(content))
+                        elif flag_residue_pointer:
+                            residue_pointer.append(int(content))
     ml_types = []
     if qm_region is None:
         qm_region = []
@@ -139,12 +144,24 @@ def read_amber_traj(
         ml_types, return_inverse=True, return_counts=True
     )
 
+    idx = np.zeros(shape[1], dtype=int)
+    for ii, (start, end) in enumerate(zip(residue_pointer[:-1], residue_pointer[1:])):
+        if start in qm_region:
+            # set atom in qm region to 0
+            # only consider the first atom in the residue
+            idx[start:end] = 0
+        else:
+            idx[start:end] = ii + 1
+    idx = np.reshape(idx, (1, shape[1], 1))
+    idx = np.tile(idx, (shape[0], 1, 1))
+
     data = {}
     data["atom_names"] = list(atom_names)
     data["atom_numbs"] = list(atom_numbs)
     data["atom_types"] = atom_types
     data["coords"] = coords
     data["cells"] = cells
+    data["aparam"] = idx
     if labeled:
         data["forces"] = forces * force_convert
         data["energies"] = np.array(energies) * energy_convert
@@ -157,6 +174,7 @@ def read_amber_traj(
             data["cells"] = data["cells"][idx_pick, :, :]
             data["energies"] = data["energies"][idx_pick]
             data["forces"] = data["forces"][idx_pick, :, :]
+            data["aparam"] = data["aparam"][idx_pick, :, :]
     data["orig"] = np.array([0, 0, 0])
     if nopbc:
         data["nopbc"] = True
