@@ -76,7 +76,8 @@ def read_amber_traj(
                         elif flag_atom_numb:
                             atomic_number.append(int(content))
                         elif flag_residue_pointer:
-                            residue_pointer.append(int(content))
+                            # starts from 1
+                            residue_pointer.append(int(content) - 1)
     ml_types = []
     if qm_region is None:
         qm_region = []
