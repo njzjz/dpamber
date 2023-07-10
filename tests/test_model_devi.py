@@ -13,6 +13,9 @@ def test_model_devi(mocker):
         def eval(self, coords, cells, atom_types, mixed_type=False):
             return 0, np.zeros_like(coords), np.zeros(9)
 
+        def get_type_map(self):
+            return ["C", "H", "O", "N", "P", "S", "HW", "OW"]
+
     mocker.patch("deepmd.infer.DeepPot", FakeDP)
 
     # spy.assert_called_once_with(21)
