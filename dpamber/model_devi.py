@@ -51,6 +51,7 @@ def calculate_devi(
         ss = list(ms.systems.values())[0]
         if "EP" in ss["atom_names"]:
             ss = ss.remove_atom_names("EP")
+        ss.apply_type_map(dps[0].get_type_map())
         devi = calc_model_devi(ss["coords"], ss["cells"], ss["atom_types"], dps)
         devi[0, 0] = ii
         stds.append(devi)
