@@ -1,11 +1,13 @@
-from typing import Union
+from typing import List, Optional, Union
 
 import dpdata
 import numpy as np
 from ase.geometry import Cell, get_distances, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
+from dpdata.system import Axis, DataType, LabeledSystem, System
 
 import dpamber.aparam as _  # noqa: F401
+from dpamber.disang import Disang
 
 
 def get_amber_fp(
@@ -15,9 +17,11 @@ def get_amber_fp(
     ll: str,
     hl: str,
     target: str = ":1",
-    out: str = None,
-    idx: Union[slice, list, int] = None,
+    out: Optional[str] = None,
+    idx: Optional[Union[slice, list, int]] = None,
     suffix_mdfrc=None,
+    disang_file: Optional[str] = None,
+    rxn_idx: Optional[List[int]] = None,
 ) -> dpdata.MultiSystems:
     """Use Ambertools to do correction calculation between a high level potential and a low level potential.
 
@@ -41,6 +45,10 @@ def get_amber_fp(
         index
     suffix_mdfrc: str, optional
         suffix of mdfrc file
+    disang_file: str, optional
+        The AMBER disang file for generalized forces
+    rxn_idx: list of int, optional
+        index of reaction coordinates
 
     Returns
     -------
@@ -61,6 +69,25 @@ def get_amber_fp(
         ll_frc = None
         hl_frc = None
 
+    if disang_file is not None:
+        disang = Disang(disang_file)
+        if rxn_idx is None:
+            nrxn = len(disang.restraints)
+        else:
+            nrxn = len(rxn_idx)
+        System.DTYPES = System.DTYPES + (
+            DataType(
+                "drdq", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 3, nrxn), required=False
+            ),
+        )
+        LabeledSystem.DTYPES = LabeledSystem.DTYPES + (
+            DataType(
+                "drdq", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 3, nrxn), required=False
+            ),
+        )
+    else:
+        disang = None
+
     s_ll = dpdata.LabeledSystem(
         ll,
         nc_file=ncfile,
@@ -69,6 +96,8 @@ def get_amber_fp(
         fmt="amber/md/qmmm",
         qm_region=target,
         exclude_unconverged=False,
+        disang=disang,
+        rxn_idx=rxn_idx,
     )
     s_hl = dpdata.LabeledSystem(
         hl,
@@ -78,6 +107,8 @@ def get_amber_fp(
         fmt="amber/md/qmmm",
         qm_region=target,
         exclude_unconverged=False,
+        disang=disang,
+        rxn_idx=rxn_idx,
     )
     if idx is not None:
         s_ll = s_ll[idx]
@@ -134,4 +165,6 @@ def run(args):
         target=args.qm_region,
         out=args.out,
         suffix_mdfrc=args.suffix_mdfrc,
+        disang_file=args.disang,
+        rxn_idx=args.rxn,
     )

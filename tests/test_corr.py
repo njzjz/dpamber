@@ -41,6 +41,9 @@ def system_is_equal(sys1: dpdata.LabeledSystem, sys2: dpdata.LabeledSystem):
     np.testing.assert_almost_equal(sys1["energies"], sys2["energies"])
     np.testing.assert_almost_equal(sys1["forces"], sys2["forces"])
     np.testing.assert_almost_equal(sys1["aparam"], sys2["aparam"])
+    # np.savetxt("drdq.txt", sys1["drdq"].reshape(sys1["drdq"].shape[0], -1))
+    if "drdq" in sys1 and "drdq" in sys2:
+        np.testing.assert_almost_equal(sys1["drdq"], sys2["drdq"])
 
 
 def get_single_system(multi: dpdata.MultiSystems) -> dpdata.LabeledSystem:
@@ -138,3 +141,21 @@ def test_uncoverage_corr():
         target=":1",
     )
     assert len(tmp_system) == 0
+
+
+def test_corr_disang(test_system):
+    get_amber_fp(
+        cutoff=6.0,
+        parmfile=str(Path(__file__).parent / "corr/qmmm.parm7"),
+        ncfile=str(Path(__file__).parent / "corr/rc.nc"),
+        ll=str(Path(__file__).parent / "corr/high_level"),
+        hl=str(Path(__file__).parent / "corr/low_level"),
+        target=":1",
+        out="tmp_data",
+        disang_file=str(Path(__file__).parent / "corr/1d.disang"),
+        rxn_idx=[0],
+    )
+    tmp_system = dpdata.MultiSystems().from_deepmd_npy("tmp_data")
+    tmp_system_single = get_single_system(tmp_system)
+    test_system_single = get_single_system(test_system)
+    system_is_equal(tmp_system_single, test_system_single)

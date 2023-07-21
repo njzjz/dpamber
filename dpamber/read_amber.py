@@ -1,5 +1,6 @@
 import os
 import re
+from typing import List, Optional
 
 import numpy as np
 from ase.geometry import cellpar_to_cell
@@ -26,6 +27,8 @@ def read_amber_traj(
     qm_region=None,
     labeled=True,
     exclude_unconverged=True,
+    disang=None,
+    rxn_idx: Optional[List[int]] = None,
 ):
     """Read amber trajectory.
 
@@ -46,6 +49,10 @@ def read_amber_traj(
         the output is a dpdata.LabeledSystem or dpdata.System
     exclude_unconverged: bool
         exclude unconverged frames
+    disang: dpamber.disang.Disang, optional
+        disang object
+    rxn_idx: list of int, optional
+        index of reaction coordinates
     """
     flag_atom_type = False
     flag_atom_numb = False
@@ -156,6 +163,16 @@ def read_amber_traj(
     idx = np.reshape(idx, (1, shape[1], 1))
     idx = np.tile(idx, (shape[0], 1, 1))
 
+    # disang
+    if disang is not None:
+        drdq = []
+        for ii in range(shape[0]):
+            drdq_i = disang.get_drdq(coords[ii])
+            if rxn_idx is not None:
+                drdq_i = drdq_i[:, :, rxn_idx]
+            drdq.append(drdq_i)
+        drdq = np.array(drdq)
+
     data = {}
     data["atom_names"] = list(atom_names)
     data["atom_numbs"] = list(atom_numbs)
@@ -176,6 +193,10 @@ def read_amber_traj(
             data["energies"] = data["energies"][idx_pick]
             data["forces"] = data["forces"][idx_pick, :, :]
             data["aparam"] = data["aparam"][idx_pick, :, :]
+    if disang is not None:
+        data["drdq"] = drdq
+        if labeled and exclude_unconverged:
+            data["drdq"] = data["drdq"][idx_pick, :, :, :]
     data["orig"] = np.array([0, 0, 0])
     if nopbc:
         data["nopbc"] = True
@@ -185,7 +206,14 @@ def read_amber_traj(
 @Format.register("amber/md/qmmm")
 class AmberMDQMMMFormat(AmberMDFormat):
     def from_system(
-        self, file_name=None, parm7_file=None, nc_file=None, qm_region=None, **kwargs
+        self,
+        file_name=None,
+        parm7_file=None,
+        nc_file=None,
+        qm_region=None,
+        disang=None,
+        rxn_idx: Optional[List[int]] = None,
+        **kwargs,
     ):
         # assume the prefix is the same if the spefic name is not given
         if parm7_file is None:
@@ -193,7 +221,12 @@ class AmberMDQMMMFormat(AmberMDFormat):
         if nc_file is None:
             nc_file = file_name + ".nc"
         return read_amber_traj(
-            parm7_file=parm7_file, nc_file=nc_file, qm_region=qm_region, labeled=False
+            parm7_file=parm7_file,
+            nc_file=nc_file,
+            qm_region=qm_region,
+            labeled=False,
+            disang=disang,
+            rxn_idx=rxn_idx,
         )
 
     def from_labeled_system(
@@ -206,6 +239,8 @@ class AmberMDQMMMFormat(AmberMDFormat):
         mdout_file=None,
         qm_region=None,
         exclude_unconverged=True,
+        disang=None,
+        rxn_idx: Optional[List[int]] = None,
         **kwargs,
     ):
         # assume the prefix is the same if the spefic name is not given
@@ -227,4 +262,6 @@ class AmberMDQMMMFormat(AmberMDFormat):
             mdout_file,
             qm_region,
             exclude_unconverged=exclude_unconverged,
+            disang=disang,
+            rxn_idx=rxn_idx,
         )
