@@ -5,8 +5,6 @@ import numpy as np
 from ase.geometry import Cell, get_distances, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
 
-import dpamber.aparam as _  # noqa: F401
-
 
 def get_amber_fp(
     cutoff: float,
