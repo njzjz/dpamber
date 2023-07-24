@@ -6,7 +6,6 @@ from ase.geometry import Cell, get_distances, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
 from dpdata.system import Axis, DataType, LabeledSystem, System
 
-import dpamber.aparam as _  # noqa: F401
 from dpamber.disang import Disang
 
 

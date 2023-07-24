@@ -1,10 +1,8 @@
 import numpy as np
-from dpdata.system import Axis, DataType, LabeledSystem, System
+from dpdata.data_type import Axis, DataType, register_data_type
 
-System.DTYPES = System.DTYPES + (
+register_data_type(
     DataType("aparam", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 1), required=False),
-)
-LabeledSystem.DTYPES = LabeledSystem.DTYPES + (
-    DataType("aparam", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 1), required=False),
+    labeled=False,
 )
 ep = None

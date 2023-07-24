@@ -5,7 +5,6 @@ import dpdata
 import numpy as np
 import pytest
 
-import dpamber.aparam as _  # noqa: F401
 from dpamber.corr import get_amber_fp
 
 
