@@ -31,6 +31,7 @@ dpamber = "dpamber.cli:run"
 [project.entry-points."dpdata.plugins"]
 amber_md_qmmm = "dpamber.read_amber:AmberMDQMMMFormat"
 aparam = "dpamber.aparam:ep"
+drdq = "dpamber.drdq:ep"
 
 [project.optional-dependencies]
 test = [

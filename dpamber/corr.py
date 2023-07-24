@@ -4,7 +4,6 @@ import dpdata
 import numpy as np
 from ase.geometry import Cell, get_distances, wrap_positions
 from dpdata.amber.mask import pick_by_amber_mask
-from dpdata.system import Axis, DataType, LabeledSystem, System
 
 from dpamber.disang import Disang
 
@@ -70,20 +69,6 @@ def get_amber_fp(
 
     if disang_file is not None:
         disang = Disang(disang_file)
-        if rxn_idx is None:
-            nrxn = len(disang.restraints)
-        else:
-            nrxn = len(rxn_idx)
-        System.DTYPES = System.DTYPES + (
-            DataType(
-                "drdq", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 3, nrxn), required=False
-            ),
-        )
-        LabeledSystem.DTYPES = LabeledSystem.DTYPES + (
-            DataType(
-                "drdq", np.ndarray, (Axis.NFRAMES, Axis.NATOMS, 3, nrxn), required=False
-            ),
-        )
     else:
         disang = None
 
