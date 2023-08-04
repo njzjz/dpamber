@@ -155,6 +155,7 @@ def read_amber_traj(
     idx = np.zeros(shape[1], dtype=int)
     for ii, (start, end) in enumerate(zip(residue_pointer[:-1], residue_pointer[1:])):
         idx[start:end] = ii + 1
+    idx[residue_pointer[-1]:] = ii + 2
     # set atom in qm region to 0
     idx[qm_region] = 0
     idx = np.reshape(idx, (1, shape[1], 1))
