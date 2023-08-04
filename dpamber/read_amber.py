@@ -154,12 +154,9 @@ def read_amber_traj(
 
     idx = np.zeros(shape[1], dtype=int)
     for ii, (start, end) in enumerate(zip(residue_pointer[:-1], residue_pointer[1:])):
-        if start in qm_region:
-            # set atom in qm region to 0
-            # only consider the first atom in the residue
-            idx[start:end] = 0
-        else:
-            idx[start:end] = ii + 1
+        idx[start:end] = ii + 1
+    # set atom in qm region to 0
+    idx[qm_region] = 0
     idx = np.reshape(idx, (1, shape[1], 1))
     idx = np.tile(idx, (shape[0], 1, 1))
 
