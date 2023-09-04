@@ -10,7 +10,9 @@ def test_model_devi(mocker):
         def __init__(self, model) -> None:
             pass
 
-        def eval(self, coords, cells, atom_types, fparam=None, aparam=None, mixed_type=False):
+        def eval(
+            self, coords, cells, atom_types, fparam=None, aparam=None, mixed_type=False
+        ):
             return 0, np.zeros_like(coords), np.zeros(9)
 
         def get_type_map(self):
