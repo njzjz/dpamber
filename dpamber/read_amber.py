@@ -1,6 +1,5 @@
 import os
 import re
-from typing import List, Optional
 
 import numpy as np
 from ase.geometry import cellpar_to_cell
@@ -28,7 +27,6 @@ def read_amber_traj(
     labeled=True,
     exclude_unconverged=True,
     disang=None,
-    rxn_idx: Optional[List[int]] = None,
 ):
     """Read amber trajectory.
 
@@ -51,8 +49,6 @@ def read_amber_traj(
         exclude unconverged frames
     disang: dpamber.disang.Disang, optional
         disang object
-    rxn_idx: list of int, optional
-        index of reaction coordinates
     """
     flag_atom_type = False
     flag_atom_numb = False
@@ -166,8 +162,6 @@ def read_amber_traj(
         drdq = []
         for ii in range(shape[0]):
             drdq_i = disang.get_drdq(coords[ii])
-            if rxn_idx is not None:
-                drdq_i = drdq_i[:, :, rxn_idx]
             drdq.append(drdq_i)
         drdq = np.array(drdq)
 
@@ -210,7 +204,6 @@ class AmberMDQMMMFormat(AmberMDFormat):
         nc_file=None,
         qm_region=None,
         disang=None,
-        rxn_idx: Optional[List[int]] = None,
         **kwargs,
     ):
         # assume the prefix is the same if the spefic name is not given
@@ -224,7 +217,6 @@ class AmberMDQMMMFormat(AmberMDFormat):
             qm_region=qm_region,
             labeled=False,
             disang=disang,
-            rxn_idx=rxn_idx,
         )
 
     def from_labeled_system(
@@ -238,7 +230,6 @@ class AmberMDQMMMFormat(AmberMDFormat):
         qm_region=None,
         exclude_unconverged=True,
         disang=None,
-        rxn_idx: Optional[List[int]] = None,
         **kwargs,
     ):
         # assume the prefix is the same if the spefic name is not given
@@ -261,5 +252,4 @@ class AmberMDQMMMFormat(AmberMDFormat):
             qm_region,
             exclude_unconverged=exclude_unconverged,
             disang=disang,
-            rxn_idx=rxn_idx,
         )
