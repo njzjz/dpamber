@@ -41,7 +41,7 @@ def system_is_equal(sys1: dpdata.LabeledSystem, sys2: dpdata.LabeledSystem):
     np.testing.assert_almost_equal(sys1["forces"], sys2["forces"])
     np.testing.assert_almost_equal(sys1["aparam"], sys2["aparam"])
     # np.savetxt("drdq.txt", sys1["drdq"].reshape(sys1["drdq"].shape[0], -1))
-    if "drdq" in sys1 and "drdq" in sys2:
+    if "drdq" in sys1.data and "drdq" in sys2.data:
         np.testing.assert_almost_equal(sys1["drdq"], sys2["drdq"])
 
 

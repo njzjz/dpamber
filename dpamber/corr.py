@@ -69,6 +69,10 @@ def get_amber_fp(
 
     if disang_file is not None:
         disang = Disang(disang_file)
+        if rxn_idx is not None:
+            disang.restraints = [
+                rr for ii, rr in enumerate(disang.restraints) if ii in rxn_idx
+            ]
     else:
         disang = None
 
@@ -81,7 +85,6 @@ def get_amber_fp(
         qm_region=target,
         exclude_unconverged=False,
         disang=disang,
-        rxn_idx=rxn_idx,
     )
     s_hl = dpdata.LabeledSystem(
         hl,
@@ -92,7 +95,6 @@ def get_amber_fp(
         qm_region=target,
         exclude_unconverged=False,
         disang=disang,
-        rxn_idx=rxn_idx,
     )
     if idx is not None:
         s_ll = s_ll[idx]
