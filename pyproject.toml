@@ -12,7 +12,7 @@ classifiers = [
 ]
 dependencies = [
     "numpy",
-    "dpdata[amber]>=0.2.2",
+    "dpdata[amber]>=0.2.16",
     "tqdm",
     'parmed>=4; python_version >= "3.8"',
     'parmed<4; python_version < "3.8"',
@@ -30,6 +30,8 @@ dpamber = "dpamber.cli:run"
 
 [project.entry-points."dpdata.plugins"]
 amber_md_qmmm = "dpamber.read_amber:AmberMDQMMMFormat"
+aparam = "dpamber.aparam:ep"
+drdq = "dpamber.drdq:ep"
 
 [project.optional-dependencies]
 test = [

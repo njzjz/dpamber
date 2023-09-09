@@ -51,6 +51,20 @@ def run():
         help="output directory or hdf5 file for DeePMD-kit data (default is dataset)",
     )
     parser_corr.add_argument("--suffix_mdfrc", type=str, help="suffix of mdfrc file")
+    parser_corr.add_argument(
+        "--disang",
+        type=str,
+        required=False,
+        help="The AMBER disang file for generalized forces",
+    )
+    parser_corr.add_argument(
+        "-r",
+        "--rxn",
+        type=int,
+        nargs="+",
+        required=False,
+        help="column indexes of the desired reaction coordinates",
+    )
     parser_corr.set_defaults(func=corr_run)
 
     parser_qmwater = subparsers.add_parser(
