@@ -8,6 +8,6 @@ jobs:
     - uses: actions/checkout@v4
     - uses: njzjz/gh-action-tox@refactor
       with:
-        python-version: "3.12"
+        python-version: "3.11"
         plugins: "tox-gh-actions"
     - uses: codecov/codecov-action@v3
