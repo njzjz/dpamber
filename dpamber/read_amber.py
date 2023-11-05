@@ -130,7 +130,10 @@ def read_amber_traj(
                     elif "EPtot" in line:
                         if is_coverage:
                             s = line.split()
-                            energies.append(float(s[-1]))
+                            if s[-1] == "**************":
+                                energies.append(np.nan)
+                            else:
+                                energies.append(float(s[-1]))
                         else:
                             energies.append(np.nan)
                             is_coverage = True
