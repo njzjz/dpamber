@@ -131,6 +131,9 @@ def get_amber_fp(
     for ss in s_corr:
         if "EP" in ss["atom_names"]:
             ss = ss.remove_atom_names("EP")
+        for name, numb in zip(ss["atom_names"], ss["atom_numbs"]):
+            if numb == 0:
+                ss = ss.remove_atom_names(name)
         ms.append(ss)
 
     if out:
