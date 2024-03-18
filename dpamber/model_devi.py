@@ -1,4 +1,5 @@
 """Calculate model deviation of the Amber MD traj."""
+
 import dpdata
 import numpy as np
 from dpdata.amber.mask import load_param_file
