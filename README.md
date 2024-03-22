@@ -9,6 +9,7 @@ pip install dpamber
 ```
 
 ## Tools
+
 ### corr: generating data for DPRc models
 
 [![DOI:10.1021/acs.jctc.1c00201](https://img.shields.io/badge/DOI-10.1021%2Facs.jctc.1c00201-blue)](https://doi.org/10.1021/acs.jctc.1c00201)
@@ -33,9 +34,11 @@ $$
 $$
 
 An example of the command is
+
 ```sh
 dpamber corr --cutoff 6. --qm_region ":1" --parm7_file some_param.param7 --nc some_coord.nc --hl high_level --ll low_level --out dataset
 ```
+
 where `--cutoff` takes cutoff radius of the QM/MM interaction for training. `--qm_region` takes AMBER mask format for the QM region. `--parm7_file` and `--nc` take the PARM7 file and the trajectory (NetCDF) file, respectively. `--ll` and `--hl` are the prefixes of low-level and high-level files, including the mdout file (`.mdout`), the mden file (`.mden`) and the mdfrc file (`.mdfrc`). The output dataset directory should be put in `--out`.
 
 See details from `dpamber corr -h`.
@@ -44,6 +47,7 @@ See details from `dpamber corr -h`.
 
 `devi` can be used to calculate the model deviation of a given trajectory.
 You need to install DeePMD-kit using
+
 ```sh
 pip install dpamber[dpgpu]
 ```
