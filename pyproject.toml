@@ -39,7 +39,6 @@ test = [
     'pytest-cov',
     'pytest-mock',
     'deepmd-kit>=2.2.2',
-    'tox-uv',
 ]
 dpcpu = [
     'deepmd-kit[cpu]>=2',
