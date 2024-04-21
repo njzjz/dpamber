@@ -25,7 +25,7 @@ readme = "README.md"
 [project.urls]
 Homepage = "https://github.com/njzjz/dpamber"
 
-[project.entry-points."console_scripts"]
+[project.scripts]
 dpamber = "dpamber.cli:run"
 
 [project.entry-points."dpdata.plugins"]
