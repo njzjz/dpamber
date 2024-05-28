@@ -2,7 +2,6 @@ import os
 import re
 
 import numpy as np
-from ase.geometry import cellpar_to_cell
 from dpdata.amber.mask import pick_by_amber_mask
 from dpdata.format import Format
 from dpdata.periodic_table import ELEMENTS
@@ -50,6 +49,8 @@ def read_amber_traj(
     disang: dpamber.disang.Disang, optional
         disang object
     """
+    from ase.geometry import cellpar_to_cell
+
     flag_atom_type = False
     flag_atom_numb = False
     flag_residue_pointer = False
