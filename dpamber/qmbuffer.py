@@ -137,11 +137,11 @@ def sort_parm(parm):
 
 
 def write_parm(parm, fn, mdinfile, qmmask, target, charge=0):
-    parm.write_parm("%s.parm7" % fn)
-    parm.write_rst7("%s.rst7" % fn)
-    PT.writeCoordinates(parm, "%s.nc" % fn).execute()
+    parm.write_parm(f"{fn}.parm7")
+    parm.write_rst7(f"{fn}.rst7")
+    PT.writeCoordinates(parm, f"{fn}.nc").execute()
     ifqnt = str(int(target != ""))
-    with open(mdinfile) as f, open("%s.mdin" % fn, "w") as fw:
+    with open(mdinfile) as f, open(f"{fn}.mdin", "w") as fw:
         fw.write(
             f.read()
             .replace("%QMMASK%", qmmask)
