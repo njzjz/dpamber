@@ -15,7 +15,7 @@ dependencies = [
     "dpdata[amber]>=0.2.16",
     "tqdm",
     'parmed>=4; python_version >= "3.8"',
-    'parmed<4; python_version < "3.8"',
+    'parmed<5; python_version < "3.8"',
     "ase",
     "scipy",
 ]
